@@ -28,7 +28,7 @@ public class spawnNPC : MonoBehaviour {
 	{
 		timer += Time.deltaTime;
 		
-		if (timer > 10)
+		if (timer > 2)
 		{
 			spawn_NPC ();
 			timer = 0.0f;
