@@ -14,6 +14,8 @@ public class TagGameLogic : MonoBehaviour {
     public GameObject unitPrefab;
 
     private bool started = false;
+    public bool oneRemaining = false;
+    public int frozenPlayers = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -43,11 +45,37 @@ public class TagGameLogic : MonoBehaviour {
         players[seekerIndex].gameObject.tag = "Seeker";
     }
 	
+    void CheckIfAllFrozen()
+    {
+        if(frozenPlayers == numberOfPlayers - 1)
+        {
+            foreach(var p in players)
+            {
+                p.GetComponent<UnitContoller>().frozen = false;
+                if(p.GetComponent<UnitContoller>().lastFrozen)
+                {
+                    GameObject curSeeker = GameObject.FindGameObjectWithTag("Seeker");
+                    curSeeker.tag = "Unit";
+                    curSeeker.GetComponent<UnitContoller>().seeker = false;
+
+                    p.GetComponent<UnitContoller>().lastFrozen = false;
+                    p.GetComponent<UnitContoller>().seeker = true;
+                    p.tag = "Seeker";
+
+                    frozenPlayers = 0;
+                }
+            }
+
+        }
+
+    }
+
 	// Update is called once per frame
 	void Update () {
         if(!started)
         {
             SetupGame();
-        }	
-	}
+        }
+        CheckIfAllFrozen();
+    }
 }

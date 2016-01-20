@@ -29,10 +29,24 @@ public class SteeringController : MonoBehaviour {
     //Sets to 1 to do velocity smoothin - 0 for acceleration-free movement
     public int notKinetic = 1;
 
+    //Wander Variables
+    public float wanderRadius = 1.2f;
+    public float wanderDistance = 2f;
+
+    //maximum amount of random displacement a second
+    public float wanderJitter = 40f;
+    private Vector3 wanderTarget;
+
     // Use this for initialization
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        //stuff for the wander behavior
+        float theta = Random.value * 2 * Mathf.PI;
+
+        //create a vector to a target position on the wander circle
+        wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), wanderRadius * Mathf.Sin(theta), 0f);        
     }
 
     /* Updates the velocity of the current game object by the given linear acceleration */
@@ -56,6 +70,27 @@ public class SteeringController : MonoBehaviour {
     {
         this.steer(new Vector3(linearAcceleration.x, linearAcceleration.y, 0));
     }
+
+    public Vector3 wanderPosition()
+    {
+        //get the jitter for this time frame
+        float jitter = wanderJitter * Time.deltaTime;
+
+        //add a small random vector to the target's position
+        wanderTarget += new Vector3(Random.Range(-1f, 1f) * jitter, Random.Range(-1f, 1f) * jitter, 0f);
+
+        //make the wanderTarget fit on the wander circle again
+        wanderTarget.Normalize();
+        wanderTarget *= wanderRadius;
+
+        //move the target in front of the character
+        Vector3 targetPosition = transform.position + transform.right * wanderDistance + wanderTarget;
+
+        //Debug.DrawLine(transform.position, targetPosition);
+
+        return targetPosition;
+    }
+
 
     /* A seek steering behavior. Will return the steering for the current game object to seek a given position */
     public Vector3 seek(Vector3 targetPosition, float maxSeekAccel)
