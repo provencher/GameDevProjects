@@ -15,10 +15,12 @@ public class UnitContoller : MonoBehaviour
     {
         acceleration = Vector3.zero;
     }
-
+ 
     // Update is called once per frame
     void Update()
-    {
+    {       
+
+
         if (frozen)
         {
             GetComponent<Rigidbody>().velocity = Vector3.zero;
@@ -29,18 +31,22 @@ public class UnitContoller : MonoBehaviour
             if (seeker)
             {
                 GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f);
-                acceleration = GetComponent<SteeringController>().seek(FindNearestUnit());
+                //Seek non-frozen characters
+                acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(false));
 
             }
             else
             {
                 GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
-                //Flee
+
+
+                //Flee and Seek frozen characters
+                Vector3 seekerPosition = GameObject.FindGameObjectWithTag("Seeker").transform.position;
+                acceleration = (-0.75f) *GetComponent<SteeringController>().seek(seekerPosition) + (0.25f)* GetComponent<SteeringController>().seek(FindNearestUnit(true));
             }
 
             GetComponent<SteeringController>().lookWhereYoureGoing();
             GetComponent<SteeringController>().steer(acceleration);
-
         }
     }
 
@@ -48,14 +54,16 @@ public class UnitContoller : MonoBehaviour
     //else seek nearest opponent
 
     //Find closest unit
-    Vector3 FindNearestUnit()
+    Vector3 FindNearestUnit(bool findFrozen)
     {
         UnitContoller[] units = FindObjectsOfType<UnitContoller>();
 
         Vector3 nearestPosition = new Vector3(999, 999, 999);
         foreach (var unit in units)
         {
-            if ((unit.transform != this.transform) && !(unit.frozen) && (Vector3.Distance(unit.gameObject.transform.position, transform.position) < Vector3.Distance(nearestPosition, transform.position)))
+            if ((unit.transform != this.transform) 
+                && ((!findFrozen && !unit.frozen) || (findFrozen && unit.frozen))
+                && (Vector3.Distance(unit.gameObject.transform.position, transform.position) < Vector3.Distance(nearestPosition, transform.position)))
             {
                 nearestPosition = unit.gameObject.transform.position;
             }
@@ -72,12 +80,19 @@ public class UnitContoller : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Unit")
+        if(collision.gameObject.tag == "Unit" || collision.gameObject.tag == "Seeker")
         {
             if (collision.gameObject.GetComponent<UnitContoller>().seeker && !seeker)
             {
                 frozen = true;
             }
-        }       
+            else if (collision.gameObject.GetComponent<UnitContoller>().frozen && !seeker)
+            {
+                collision.gameObject.GetComponent<UnitContoller>().frozen = false;
+            }
+
+
+        }    
+           
     }
 }

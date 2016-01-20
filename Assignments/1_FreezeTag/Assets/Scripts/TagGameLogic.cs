@@ -38,7 +38,9 @@ public class TagGameLogic : MonoBehaviour {
         }
 
         //Select first seeker
-        players[Random.Range(0, players.Count - 1)].GetComponent<UnitContoller>().seeker = true;
+        int seekerIndex = Random.Range(0, players.Count - 1);
+        players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
+        players[seekerIndex].gameObject.tag = "Seeker";
     }
 	
 	// Update is called once per frame
