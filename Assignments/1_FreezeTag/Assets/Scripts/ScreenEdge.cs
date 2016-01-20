@@ -4,9 +4,9 @@ using System.Collections;
 public class ScreenEdge : MonoBehaviour
 {
 
-    private Vector3 bottomLeft;
-    private Vector3 topRight;
-    private Vector3 widthHeight;
+    public Vector3 bottomLeft;
+    public Vector3 topRight;
+    public Vector3 widthHeight;
 
     // Use this for initialization
     void Start()

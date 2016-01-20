@@ -22,7 +22,7 @@ public class UnitContoller : MonoBehaviour
         if (frozen)
         {
             GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
+            GetComponent<MeshRenderer>().material.color = new Color(0.0f, 0.0f, 1.0f);
         }
         else
         {
@@ -64,7 +64,7 @@ public class UnitContoller : MonoBehaviour
         //If no target found, don't move
         if (nearestPosition.x == 999)
         {
-            nearestPosition = transform.position;
+            nearestPosition = Vector3.zero;
         }
 
         return nearestPosition;
