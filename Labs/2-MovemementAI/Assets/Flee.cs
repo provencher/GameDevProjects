@@ -14,10 +14,19 @@ public class Flee : MonoBehaviour
     {
         control = GetComponent<SteeringController>();
         rb = GetComponent<Rigidbody>();
+        pursuer = GameObject.Find("Seeking Car").transform;
     }
 
     void Update()
     {
-        transform.position += -1* moveSpeed/10 * control.seek(pursuer.position)*Time.deltaTime;
+        //Debug.Log(control.seek(pursuer.position));
+        if (control.notKinetic == 0)
+        {
+            transform.position += -1 * moveSpeed / 10 * control.seek(pursuer.position) * Time.deltaTime;
+        }
+        else
+        {
+            rb.AddForce( -1 * moveSpeed * control.seek(pursuer.position), ForceMode.Impulse);
+        }
     }
 }

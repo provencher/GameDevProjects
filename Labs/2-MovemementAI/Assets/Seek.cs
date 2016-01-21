@@ -14,10 +14,21 @@ public class Seek : MonoBehaviour
     {
         control = GetComponent<SteeringController>();
         rb = GetComponent<Rigidbody>();
+        //target = GameObject.Find("Fleeing Car").transform;
     }
 
     void Update()
-    {    
-        transform.position += moveSpeed/10 *control.seek(target.position)*Time.deltaTime;
+    {
+        // transform.position +=  moveSpeed / 20 * control.seek(target.position) * Time.deltaTime;
+        //Debug.Log(control.seek(target.position));
+        //rb.AddForce(-1 * moveSpeed * control.seek(target.position), ForceMode.Impulse);
+        if (control.notKinetic == 0)
+        {
+            transform.position += moveSpeed / 10 * control.seek(target.position) * Time.deltaTime;
+        }
+        else
+        {
+            rb.AddForce(moveSpeed * control.seek(target.position), ForceMode.Impulse);
+        }
     }
 }

@@ -17,6 +17,13 @@ public class Wander : MonoBehaviour
 
     void Update()
     {
-        transform.position += moveSpeed/10 * (transform.position - control.wanderPosition())* Time.deltaTime;
+        if(control.notKinetic == 0)
+        {
+            transform.position += moveSpeed / 10 * (transform.position - control.wanderPosition()) * Time.deltaTime;
+        }
+        else
+        {
+            rb.AddForce((transform.position - control.wanderPosition())*25, ForceMode.Impulse);
+        }
     }
 }
