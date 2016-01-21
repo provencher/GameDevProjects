@@ -23,8 +23,6 @@ public class SteeringController : MonoBehaviour {
     private Rigidbody rb;
 
     public bool smoothing = true;
-    public int numSamplesForSmoothing = 5;
-    private Queue<Vector2> velocitySamples = new Queue<Vector2>();
 
     //Sets to 1 to do velocity smoothin - 0 for acceleration-free movement
     public int notKinetic = 1;
@@ -62,13 +60,9 @@ public class SteeringController : MonoBehaviour {
         //If Kinetic immidiately achieve max speed
         if(notKinetic == 0)
         {
-            rb.velocity = rb.velocity.normalized * maxVelocity;
+            rb.velocity = linearAcceleration.normalized * maxVelocity;
+            //rb.velocity = Vector3.zero;
         }
-    }
-
-    public void steer(Vector2 linearAcceleration)
-    {
-        this.steer(new Vector3(linearAcceleration.x, linearAcceleration.y, 0));
     }
 
     public Vector3 wanderPosition()
@@ -112,33 +106,6 @@ public class SteeringController : MonoBehaviour {
     public Vector3 seek(Vector3 targetPosition)
     {
         return seek(targetPosition, maxAcceleration);
-    }
-
-    /* Makes the current game object look where he is going */
-    public void lookWhereYoureGoing()
-    {
-        Vector2 direction = rb.velocity;
-
-        if (smoothing)
-        {
-            if (velocitySamples.Count == numSamplesForSmoothing)
-            {
-                velocitySamples.Dequeue();
-            }
-
-            velocitySamples.Enqueue(rb.velocity);
-
-            direction = Vector2.zero;
-
-            foreach (Vector2 v in velocitySamples)
-            {
-                direction += v;
-            }
-
-            direction /= velocitySamples.Count;
-        }
-
-        lookAtDirection(direction);
     }
 
     public void lookAtDirection(Vector2 direction)

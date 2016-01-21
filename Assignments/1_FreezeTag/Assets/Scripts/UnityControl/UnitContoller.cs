@@ -7,6 +7,8 @@ public class UnitContoller : MonoBehaviour
     public bool seeker = false;
     public bool frozen = false;
     public bool lastFrozen = false;
+    bool hasHalted = false;
+    bool newDirective = false;    
 
     Vector3 acceleration;    
 
@@ -33,7 +35,7 @@ public class UnitContoller : MonoBehaviour
             {
                 GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f);
                 //Seek non-frozen characters
-                acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(false));
+                acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(false)) + (0.5f)*GetComponent<SteeringController>().wanderPosition();
 
             }
             else
@@ -44,20 +46,47 @@ public class UnitContoller : MonoBehaviour
                 //Flee and Seek frozen characters
                 Vector3 seekerPosition = GameObject.FindGameObjectWithTag("Seeker").transform.position;
 
+
                 //Check within flee range
-                if(Vector3.Distance(transform.position, seekerPosition) < 3)
+                if (Vector3.Distance(transform.position, seekerPosition) < 3)
                 {
-                    acceleration = (-0.3f) * GetComponent<SteeringController>().seek(seekerPosition);
+                    acceleration = (-1)*GetComponent<SteeringController>().seek(seekerPosition);
                 }
                 else
-                {        
-                    acceleration = (0.3f) * GetComponent<SteeringController>().seek(FindNearestUnit(true));
+                {
+                    acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(true));
                 }
-                //acceleration = (-0.75f) *GetComponent<SteeringController>().seek(seekerPosition) + (0.25f)* GetComponent<SteeringController>().seek(FindNearestUnit(true));
+
+                /*
+                if (!hasHalted)
+                {
+                    acceleration = Vector3.zero;
+
+                    if ((GetComponent<Rigidbody>().velocity.magnitude > 0.1f))
+                    {
+                        if(GetComponent<SteeringController>().notKinetic == 0)
+                        {
+                            GetComponent<Rigidbody>().velocity = Vector3.zero;
+                        }
+                        else
+                        {
+                            GetComponent<Rigidbody>().velocity /= 4;
+                        }                        
+                    }
+                    else
+                    {
+                        hasHalted = true;
+                    }
+                }
+                else
+                {      
+                   
+                } 
+                */               
             }
                         
             GetComponent<SteeringController>().steer(acceleration);
-            GetComponent<SteeringController>().lookWhereYoureGoing();
+            GetComponent<SteeringController>().lookAtDirection(acceleration);
         }
     }
 

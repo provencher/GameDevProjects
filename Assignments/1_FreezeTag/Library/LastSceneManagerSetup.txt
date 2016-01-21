@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/FreeTag.unity
+- path: Assets/FreezeTag.unity
   isLoaded: 1
   isActive: 1

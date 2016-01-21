@@ -17,6 +17,8 @@ public class TagGameLogic : MonoBehaviour {
     public bool oneRemaining = false;
     public int frozenPlayers = 0;
 
+    public bool isKinetic;
+
 	// Use this for initialization
 	void Start () {
         players = new List<GameObject>();       
@@ -37,12 +39,19 @@ public class TagGameLogic : MonoBehaviour {
             Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
 
             players.Add((GameObject)Instantiate(unitPrefab, spawnPos, Quaternion.identity));
+
+            if (isKinetic)
+            {
+                players[players.Count - 1].GetComponent<SteeringController>().notKinetic = 0;
+            }
         }
 
         //Select first seeker
         int seekerIndex = Random.Range(0, players.Count - 1);
         players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
         players[seekerIndex].gameObject.tag = "Seeker";
+        
+
     }
 	
     void CheckIfAllFrozen()
