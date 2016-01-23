@@ -68,11 +68,11 @@ public class SteeringController : MonoBehaviour
         //add a small random vector to the target's position
         wanderTarget += new Vector3(Random.Range(-1f, 1f) * jitter, 0, Random.Range(-1f, 1f) * jitter);
 
-        //wanderTarget.y = 0;
+        wanderTarget.y = 0;
 
         //make the wanderTarget fit on the wander circle again
         wanderTarget.Normalize();
-        wanderTarget *= wanderRadius*15;
+        wanderTarget *= wanderRadius;
 
         //move the target in front of the character
         Vector3 targetPosition = transform.position + transform.right * wanderDistance + wanderTarget;
@@ -89,8 +89,8 @@ public class SteeringController : MonoBehaviour
         //Get the direction
         Vector3 acceleration = targetPosition - transform.position;
 
-        //Remove the z coordinate
-        //acceleration.y = 0;
+        //Remove the y coordinate
+        acceleration.y = 0;
 
         acceleration.Normalize();
 
@@ -138,7 +138,7 @@ public class SteeringController : MonoBehaviour
         Vector3 targetVelocity = targetPosition - transform.position;
 
         // Remove the z coordinate
-        //targetVelocity.z = 0;
+        targetVelocity.y = 0;
 
         /* Get the distance to the target */
         float dist = targetVelocity.magnitude;

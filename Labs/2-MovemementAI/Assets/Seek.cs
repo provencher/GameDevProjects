@@ -24,11 +24,15 @@ public class Seek : MonoBehaviour
         //rb.AddForce(-1 * moveSpeed * control.seek(target.position), ForceMode.Impulse);
         if (control.notKinetic == 0)
         {
-            transform.position += moveSpeed / 10 * control.seek(target.position) * Time.deltaTime;
+            //transform.position += moveSpeed / 10 * control.seek(target.position) * Time.deltaTime;
+            rb.velocity = moveSpeed * control.seek(target.position).normalized;
         }
         else
         {
-            rb.AddForce(moveSpeed * control.seek(target.position), ForceMode.Impulse);
+            if (rb.velocity.magnitude < control.maxVelocity)
+            {
+                rb.AddForce(moveSpeed * control.seek(target.position).normalized, ForceMode.VelocityChange);
+            }
         }
     }
 }

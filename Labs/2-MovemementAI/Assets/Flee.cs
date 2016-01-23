@@ -22,11 +22,15 @@ public class Flee : MonoBehaviour
         //Debug.Log(control.seek(pursuer.position));
         if (control.notKinetic == 0)
         {
-            transform.position += -1 * moveSpeed / 10 * control.seek(pursuer.position) * Time.deltaTime;
+            //transform.position += -1 * moveSpeed / 10 * control.seek(pursuer.position) * Time.deltaTime;
+            rb.velocity = moveSpeed * -1 *  control.seek(pursuer.position).normalized;
         }
         else
         {
-            rb.AddForce( -1 * moveSpeed * control.seek(pursuer.position), ForceMode.Impulse);
+            if (rb.velocity.magnitude < control.maxVelocity)
+            {
+                rb.AddForce(-1 * moveSpeed *  control.seek(pursuer.position).normalized, ForceMode.VelocityChange);
+            }
         }
     }
 }

@@ -21,22 +21,26 @@ public class Arrive : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log("Arrive: " + rb.velocity.ToString());
         if(moveSpeed > 0.01f)
         {
             if (Vector3.Distance(transform.position, target.position) < nearRadius * 2)
             {
                 moveSpeed /= 2;
-            }                               
+            }                                          
         }
 
         if (control.notKinetic == 0)
         {
-            transform.position += moveSpeed / 10 * control.arrive(target.position) * Time.deltaTime;
+            //transform.position += moveSpeed / 10 * control.arrive(target.position) * Time.deltaTime;
+            rb.velocity = moveSpeed * control.arrive(target.position).normalized;
         }
         else
         {
-            rb.AddForce(control.arrive(target.position) * moveSpeed, ForceMode.Impulse);
+            if(rb.velocity.magnitude < control.maxVelocity)
+            {
+                rb.AddForce(moveSpeed * control.arrive(target.position).normalized, ForceMode.VelocityChange);
+            }
         }
-
     }
 }

@@ -19,11 +19,15 @@ public class Wander : MonoBehaviour
     {
         if(control.notKinetic == 0)
         {
-            transform.position += moveSpeed / 10 * (transform.position - control.wanderPosition()) * Time.deltaTime;
+            //transform.position += moveSpeed / 10 * (transform.position - control.wanderPosition()) * Time.deltaTime;
+            rb.velocity = moveSpeed * control.seek(control.wanderPosition()).normalized;
         }
         else
         {
-            rb.AddForce((transform.position - control.wanderPosition())*25, ForceMode.Impulse);
+            if (rb.velocity.magnitude < control.maxVelocity)
+            {
+                rb.AddForce(moveSpeed * control.seek(control.wanderPosition()).normalized, ForceMode.VelocityChange);
+            }
         }
     }
 }
