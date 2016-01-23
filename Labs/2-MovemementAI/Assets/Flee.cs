@@ -14,11 +14,11 @@ public class Flee : MonoBehaviour
     {
         control = GetComponent<SteeringController>();
         rb = GetComponent<Rigidbody>();
-        pursuer = GameObject.Find("Seeking Car").transform;
     }
 
     void Update()
     {
+
         //Debug.Log(control.seek(pursuer.position));
         if (control.notKinetic == 0)
         {

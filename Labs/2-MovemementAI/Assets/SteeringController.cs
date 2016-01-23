@@ -26,7 +26,7 @@ public class SteeringController : MonoBehaviour
     public bool smoothing = true;
 
     //Sets to 1 to do velocity smoothin - 0 for acceleration-free movement
-    public int notKinetic = 1;
+    public int notKinetic;
 
     //Wander Variables
     public float wanderRadius = 1.2f;
@@ -46,7 +46,7 @@ public class SteeringController : MonoBehaviour
         float theta = Random.value * 2 * Mathf.PI;
 
         //create a vector to a target position on the wander circle
-        wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), 0, wanderRadius * Mathf.Sin(theta));
+        wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), wanderRadius * Mathf.Sin(theta), 0f);
     }
 
     /* Updates the velocity of the current game object by the given linear acceleration */
@@ -89,8 +89,13 @@ public class SteeringController : MonoBehaviour
         //Get the direction
         Vector3 acceleration = targetPosition - transform.position;
 
+
         //Remove the y coordinate
         acceleration.y = 0;
+
+        //Remove the z coordinate
+        //acceleration.z = 0;
+
 
         acceleration.Normalize();
 

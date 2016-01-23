@@ -16,7 +16,6 @@ public class Arrive : MonoBehaviour
     {
         control = GetComponent<SteeringController>();
         rb = GetComponent<Rigidbody>();
-        target = GameObject.Find("Stationary Car").transform;
     }
 
     void Update()
@@ -24,7 +23,7 @@ public class Arrive : MonoBehaviour
         //Debug.Log("Arrive: " + rb.velocity.ToString());
         if(moveSpeed > 0.01f)
         {
-            if (Vector3.Distance(transform.position, target.position) < nearRadius * 2)
+            if (Vector3.Distance(transform.position, target.position) < nearRadius)
             {
                 moveSpeed /= 2;
             }                                          

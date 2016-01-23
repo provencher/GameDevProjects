@@ -14,10 +14,10 @@ public class Seek : MonoBehaviour
     {
         control = GetComponent<SteeringController>();
         rb = GetComponent<Rigidbody>();
-        //target = GameObject.Find("Fleeing Car").transform;
     }
 
     void Update()
+
     {
         // transform.position +=  moveSpeed / 20 * control.seek(target.position) * Time.deltaTime;
         //Debug.Log(control.seek(target.position));

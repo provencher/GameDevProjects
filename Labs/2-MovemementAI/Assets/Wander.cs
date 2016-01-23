@@ -29,5 +29,6 @@ public class Wander : MonoBehaviour
                 rb.AddForce(moveSpeed * control.seek(control.wanderPosition()).normalized, ForceMode.VelocityChange);
             }
         }
+
     }
 }
