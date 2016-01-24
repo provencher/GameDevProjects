@@ -166,7 +166,7 @@ public class SteeringController : MonoBehaviour
         }
         else
         {
-            targetSpeed = maxVelocity * notKinetic * (dist / slowRadius);
+            targetSpeed = maxVelocity * (dist / slowRadius);
         }
 
         /* Give targetVelocity the correct speed */

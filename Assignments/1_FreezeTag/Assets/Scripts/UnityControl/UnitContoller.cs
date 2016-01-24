@@ -84,7 +84,8 @@ public class UnitContoller : MonoBehaviour
                 } 
                 */               
             }
-                        
+            
+            //Apply Acceleration
             GetComponent<SteeringController>().steer(acceleration);
             GetComponent<SteeringController>().lookAtDirection(acceleration);
         }

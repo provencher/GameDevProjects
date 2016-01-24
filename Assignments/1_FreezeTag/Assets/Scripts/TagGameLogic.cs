@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,10 +20,33 @@ public class TagGameLogic : MonoBehaviour {
 
     public bool isKinetic;
 
+    [SerializeField]
+    public GameObject button;
+
 	// Use this for initialization
 	void Start () {
         players = new List<GameObject>();       
 	}
+
+    public void ToggleKinematic()
+    {
+        if(isKinetic)
+        {
+            isKinetic = false;
+            button.GetComponent<Text>().text = "Steering";
+        }
+        else
+        {
+            isKinetic = true;
+            button.GetComponent<Text>().text = "Kinematic";
+        }
+
+        SteeringController[] units = FindObjectsOfType<SteeringController>();
+        foreach(var unit in units)
+        {
+            unit.notKinetic = (isKinetic ? 0 : 1);
+        }
+    }
 
     void SetupGame()
     {
@@ -59,7 +83,7 @@ public class TagGameLogic : MonoBehaviour {
         if(frozenPlayers == numberOfPlayers - 1)
         {
             foreach(var p in players)
-            {
+            {       
                 p.GetComponent<UnitContoller>().frozen = false;
                 if(p.GetComponent<UnitContoller>().lastFrozen)
                 {
@@ -74,11 +98,24 @@ public class TagGameLogic : MonoBehaviour {
                     frozenPlayers = 0;
                 }
             }
-
         }
-
     }
 
+    void UpdateUnitVelocities()
+    {
+        foreach (var p in players)
+        {
+            //Balance game with different max velocities
+            if (p.GetComponent<UnitContoller>().seeker)
+            {
+                p.GetComponent<SteeringController>().maxVelocity = 3.5f;
+            }
+            else
+            {
+                p.GetComponent<SteeringController>().maxVelocity = 2.0f;
+            }
+        }
+    }
 	// Update is called once per frame
 	void Update () {
         if(!started)
@@ -86,5 +123,6 @@ public class TagGameLogic : MonoBehaviour {
             SetupGame();
         }
         CheckIfAllFrozen();
+        UpdateUnitVelocities();
     }
 }

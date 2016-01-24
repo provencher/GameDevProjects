@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class SteeringController : MonoBehaviour {
 
     public float maxVelocity = 3.5f;
+    public float halfVelocity = 3.5f;
+    public float regularVelocity = 3.5f;
 
     /* The maximum acceleration */
     public float maxAcceleration = 10f;
@@ -44,7 +46,7 @@ public class SteeringController : MonoBehaviour {
         float theta = Random.value * 2 * Mathf.PI;
 
         //create a vector to a target position on the wander circle
-        wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), wanderRadius * Mathf.Sin(theta), 0f);        
+        wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), wanderRadius * Mathf.Sin(theta), 0f);      
     }
 
     /* Updates the velocity of the current game object by the given linear acceleration */
@@ -161,7 +163,7 @@ public class SteeringController : MonoBehaviour {
         }
         else
         {
-            targetSpeed = maxVelocity * notKinetic * (dist / slowRadius);
+            targetSpeed = maxVelocity * (dist / slowRadius);
         }
 
         /* Give targetVelocity the correct speed */
