@@ -57,20 +57,22 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\DroneBehavior.cs" />
+    <Compile Include="Assets\DroneController\Cohesion.cs" />
+    <Compile Include="Assets\DroneController\DroneBehavior.cs" />
+    <Compile Include="Assets\DroneController\FlockingUnit.cs" />
+    <Compile Include="Assets\DroneController\NearSensor.cs" />
+    <Compile Include="Assets\DroneController\Separation.cs" />
+    <Compile Include="Assets\DroneController\SteeringBasics.cs" />
+    <Compile Include="Assets\DroneController\VelocityMatch.cs" />
+    <Compile Include="Assets\DroneController\Wander2.cs" />
     <Compile Include="Assets\GrabberController.cs" />
     <Compile Include="Assets\ObjectGrabberBehavior.cs" />
+    <Compile Include="Assets\ScreenEdge.cs" />
     <Compile Include="Assets\SwarmBehavior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

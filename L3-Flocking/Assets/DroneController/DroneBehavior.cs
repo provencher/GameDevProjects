@@ -3,11 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DroneBehavior : MonoBehaviour {
-
-	// other members of my swarm
-	public List<GameObject> drones;
-	public SwarmBehavior swarm;
+public class DroneBehavior : MonoBehaviour {    
 
 	void Start()
 	{

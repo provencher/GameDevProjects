@@ -23,12 +23,17 @@ public class ObjectGrabberBehavior : MonoBehaviour {
 				{
 					// move the object in the direction of the drag
 					// could affect velocity instead
-					//rb.velocity = GrabberController.Instance.dragVector * dragFactor;
-					rb.velocity = Vector3.zero;
-					rb.transform.position = GrabberController.Instance.cursorPosition;
+					rb.velocity = GrabberController.Instance.dragVector * dragFactor;
+                    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
+                    transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+					//rb.velocity = Vector3.zero;
+					//rb.transform.position = GrabberController.Instance.cursorPosition;                
 				}
 			}
 		}
-	}
+
+        
+
+    }
 }
 
