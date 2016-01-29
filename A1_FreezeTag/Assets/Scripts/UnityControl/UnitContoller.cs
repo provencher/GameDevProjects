@@ -8,7 +8,9 @@ public class UnitContoller : MonoBehaviour
     public bool frozen = false;
     public bool lastFrozen = false;
     bool hasHalted = false;
-    bool newDirective = false;    
+    bool newDirective = false;
+    public bool stopGo;
+
 
     Vector3 acceleration;    
 
@@ -22,74 +24,63 @@ public class UnitContoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {       
-
-
-        if (frozen)
+        if(!stopGo || (stopGo && GetComponent<Rigidbody>().velocity.magnitude < 0.1f))
         {
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<MeshRenderer>().material.color = new Color(0.0f, 0.0f, 1.0f);
-        }
-        else
-        {
-            if (seeker)
+            if (frozen)
             {
-                GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f);
-                //Seek non-frozen characters
-                acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(false)) + (0.5f)*GetComponent<SteeringController>().wanderPosition();
-
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
+                GetComponent<MeshRenderer>().material.color = new Color(0.0f, 0.0f, 1.0f);
             }
             else
             {
-                GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
-
-                
-                //Flee and Seek frozen characters
-                Vector3 seekerPosition = GameObject.FindGameObjectWithTag("Seeker").transform.position;
-
-
-                //Check within flee range
-                if (Vector3.Distance(transform.position, seekerPosition) < 3)
+                if (seeker)
                 {
-                    acceleration = (-1)*GetComponent<SteeringController>().seek(seekerPosition);
+                    GetComponent<MeshRenderer>().material.color = new Color(1.0f, 0.0f, 0.0f);
+                    //Seek non-frozen characters
+                    acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(false)) + (0.5f) * GetComponent<SteeringController>().wanderPosition();
+
                 }
                 else
                 {
-                    acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(true));
-                }
+                    GetComponent<MeshRenderer>().material.color = new Color(0.0f, 1.0f, 0.0f);
 
-                /*
-                if (!hasHalted)
-                {
-                    acceleration = Vector3.zero;
 
-                    if ((GetComponent<Rigidbody>().velocity.magnitude > 0.1f))
+                    //Flee and Seek frozen characters
+                    Vector3 seekerPosition = GameObject.FindGameObjectWithTag("Seeker").transform.position;
+
+
+                    //Check within flee range
+                    if (Vector3.Distance(transform.position, seekerPosition) < 3)
                     {
-                        if(GetComponent<SteeringController>().notKinetic == 0)
-                        {
-                            GetComponent<Rigidbody>().velocity = Vector3.zero;
-                        }
-                        else
-                        {
-                            GetComponent<Rigidbody>().velocity /= 4;
-                        }                        
+                        acceleration = (-1) * GetComponent<SteeringController>().seek(seekerPosition);
                     }
                     else
                     {
-                        hasHalted = true;
+                        acceleration = GetComponent<SteeringController>().seek(FindNearestUnit(true));
                     }
                 }
-                else
-                {      
-                   
-                } 
-                */               
+
+                //Apply Acceleration
+                GetComponent<SteeringController>().lookAtDirection(acceleration);
+                GetComponent<SteeringController>().steer(acceleration);
+
             }
-            
-            //Apply Acceleration
-            GetComponent<SteeringController>().steer(acceleration);
-            GetComponent<SteeringController>().lookAtDirection(acceleration);
         }
+        else
+        {
+            if (GetComponent<SteeringController>().notKinetic == 1)
+            {
+                GetComponent<Rigidbody>().velocity /= 2;
+            }
+            else
+            {
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
+            }            
+        }
+        
     }
+    
+
 
     //If !Seeking then wander + flee if close
     //else seek nearest opponent

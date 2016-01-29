@@ -19,14 +19,21 @@ public class TagGameLogic : MonoBehaviour {
     public int frozenPlayers = 0;
 
     public bool isKinetic;
+    public bool isStopGo; 
 
     [SerializeField]
     public GameObject button;
 
+    [SerializeField]
+    public GameObject stopButton;
+
 	// Use this for initialization
 	void Start () {
-        players = new List<GameObject>();       
-	}
+        players = new List<GameObject>();
+
+        isKinetic = false;
+        isStopGo = false;
+    }
 
     public void ToggleKinematic()
     {
@@ -41,10 +48,40 @@ public class TagGameLogic : MonoBehaviour {
             button.GetComponent<Text>().text = "Kinematic";
         }
 
+        SetKinematic(isKinetic);
+    }
+
+    void SetKinematic(bool kinematic)
+    {
         SteeringController[] units = FindObjectsOfType<SteeringController>();
-        foreach(var unit in units)
+        foreach (var unit in units)
         {
-            unit.notKinetic = (isKinetic ? 0 : 1);
+            unit.notKinetic = (kinematic ? 0 : 1);
+        }
+    }
+
+    public void StopGo()
+    {
+        if (!isStopGo)
+        {
+            isStopGo = true;
+            stopButton.GetComponent<Text>().text = "Stop & Go";
+        }
+        else
+        {
+            isStopGo = false;
+            stopButton.GetComponent<Text>().text = "Smooth";
+        }
+
+        SetStopGo(isStopGo);
+    }
+
+    void SetStopGo(bool stopgo)
+    {
+        UnitContoller[] units = FindObjectsOfType<UnitContoller>();
+        foreach (var unit in units)
+        {
+            unit.stopGo = stopgo;
         }
     }
 
@@ -74,8 +111,10 @@ public class TagGameLogic : MonoBehaviour {
         int seekerIndex = Random.Range(0, players.Count - 1);
         players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
         players[seekerIndex].gameObject.tag = "Seeker";
-        
 
+
+        SetStopGo(isStopGo);
+        SetKinematic(isKinetic);
     }
 	
     void CheckIfAllFrozen()
