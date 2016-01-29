@@ -62,14 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\DroneController\Cohesion.cs" />
     <Compile Include="Assets\DroneController\DroneBehavior.cs" />
-    <Compile Include="Assets\DroneController\FlockingUnit.cs" />
     <Compile Include="Assets\DroneController\NearSensor.cs" />
-    <Compile Include="Assets\DroneController\Separation.cs" />
     <Compile Include="Assets\DroneController\SteeringBasics.cs" />
-    <Compile Include="Assets\DroneController\VelocityMatch.cs" />
-    <Compile Include="Assets\DroneController\Wander2.cs" />
     <Compile Include="Assets\GrabberController.cs" />
     <Compile Include="Assets\ObjectGrabberBehavior.cs" />
     <Compile Include="Assets\ScreenEdge.cs" />

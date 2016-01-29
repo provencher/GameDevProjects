@@ -26,9 +26,6 @@ public class SteeringBasics : MonoBehaviour {
 
 	private Rigidbody rb;
 
-	public bool smoothing = true;
-	public int numSamplesForSmoothing = 5;
-	private Queue<Vector2> velocitySamples = new Queue<Vector2>();
 
 	// Use this for initialization
 	void Start () {
@@ -69,28 +66,6 @@ public class SteeringBasics : MonoBehaviour {
         return seek(targetPosition, maxAcceleration);
     }
 
-    /* Makes the current game object look where he is going */
-    public void lookWhereYoureGoing() {
-		Vector2 direction = rb.velocity;
-
-		if (smoothing) {
-			if (velocitySamples.Count == numSamplesForSmoothing) {
-				velocitySamples.Dequeue ();
-			}
-
-			velocitySamples.Enqueue (rb.velocity);
-
-			direction = Vector2.zero;
-
-			foreach (Vector2 v in velocitySamples) {
-				direction += v;
-			}
-
-			direction /= velocitySamples.Count;
-		}
-
-		lookAtDirection (direction);
-	}
 
 	public void lookAtDirection(Vector2 direction) {
 		direction.Normalize();
@@ -163,25 +138,6 @@ public class SteeringBasics : MonoBehaviour {
 		return acceleration;
 	}
 
-    public Vector3 interpose(Rigidbody target1, Rigidbody target2)
-    {
-        Vector3 midPoint = (target1.position + target2.position) / 2;
-
-        float timeToReachMidPoint = Vector3.Distance(midPoint, transform.position) / maxVelocity;
-
-        Vector3 futureTarget1Pos = target1.position + target1.velocity * timeToReachMidPoint;
-        Vector3 futureTarget2Pos = target2.position + target2.velocity * timeToReachMidPoint;
-
-        midPoint = (futureTarget1Pos + futureTarget2Pos) / 2;
-
-        return arrive(midPoint);
-    }
-
-    /* Checks to see if the target is in front of the character */
-    public bool isInFront(Vector3 target)
-    {
-        return isFacing(target, 0);
-    }
 
     public bool isFacing(Vector3 target, float cosineValue) { 
         Vector2 facing = transform.right.normalized;

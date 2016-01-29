@@ -6,11 +6,15 @@ public class NearSensor : MonoBehaviour {
 
 	public HashSet<Rigidbody> targets = new HashSet<Rigidbody>();
 
+
+    /*
 	void OnTriggerEnter(Collider other) {
-		targets.Add (other.GetComponent<Rigidbody>());
+		targets.Add (other.gameObject.transform.root.GetComponent<Rigidbody>());
 	}
+
 	
 	void OnTriggerExit(Collider other) {
-		targets.Remove (other.GetComponent<Rigidbody>());
+		targets.Remove (other.gameObject.transform.root.GetComponent<Rigidbody>());
 	}
+    */
 }

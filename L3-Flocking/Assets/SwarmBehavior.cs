@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -25,8 +26,18 @@ public class SwarmBehavior : MonoBehaviour {
     List<GameObject> drones;
     bool started = false;
 
-	// Use this for initialization
-	void Start ()
+    [SerializeField]
+    public Slider cohesion;
+
+    [SerializeField]
+    public Slider sepDistance;
+
+    [SerializeField]
+    public Slider nRadius;
+
+
+    // Use this for initialization
+    void Start ()
 	{
         drones = new List<GameObject>();
     }
@@ -47,9 +58,20 @@ public class SwarmBehavior : MonoBehaviour {
             Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
 
             drones.Add((GameObject)Instantiate(dronePrefab, spawnPos, Quaternion.identity));
-            
+            drones[i].GetComponent<DroneBehavior>().target = target.transform;            
         }        
     }
+
+    public void UpdateWeights()
+    {
+        foreach(var d in drones)
+        {
+            d.GetComponent<DroneBehavior>().neighbourRadius = nRadius.value;
+            d.GetComponent<DroneBehavior>().cohesionWeight = cohesion.value;
+            d.GetComponent<DroneBehavior>().separationWeight = sepDistance.value;
+        }
+    }
+
 
     // Update is called once per frame
     void Update ()
