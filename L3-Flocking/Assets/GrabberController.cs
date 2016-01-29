@@ -38,7 +38,11 @@ public class GrabberController : MonoBehaviour {
 
         if(dragVector.magnitude > 0.01f)
         {
-            dragVector /= 2;
+            dragVector -= dragVector * Time.deltaTime;
+        }
+        else
+        {
+            dragVector = Vector3.zero;
         }
 	}
 
