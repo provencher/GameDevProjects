@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2-MovemementAI.CSharp.Plugins", "2-MovemementAI.CSharp.Plugins.csproj", "{C1E8E3D9-1787-9208-4267-7BF10129631C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2-MovemementAI.CSharp", "2-MovemementAI.CSharp.csproj", "{35973416-4A07-91D8-F648-3E6F04C6B2CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1E8E3D9-1787-9208-4267-7BF10129631C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1E8E3D9-1787-9208-4267-7BF10129631C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1E8E3D9-1787-9208-4267-7BF10129631C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1E8E3D9-1787-9208-4267-7BF10129631C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35973416-4A07-91D8-F648-3E6F04C6B2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35973416-4A07-91D8-F648-3E6F04C6B2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35973416-4A07-91D8-F648-3E6F04C6B2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35973416-4A07-91D8-F648-3E6F04C6B2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

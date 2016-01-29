@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2_Kinematic.CSharp.Plugins", "Lab2_Kinematic.CSharp.Plugins.csproj", "{AFC72A6D-068D-B919-06D7-FBEF88878560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2_Kinematic.CSharp", "Lab2_Kinematic.CSharp.csproj", "{1AAC303B-50B6-980A-9D4F-AF5BFEB26291}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFC72A6D-068D-B919-06D7-FBEF88878560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC72A6D-068D-B919-06D7-FBEF88878560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC72A6D-068D-B919-06D7-FBEF88878560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC72A6D-068D-B919-06D7-FBEF88878560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAC303B-50B6-980A-9D4F-AF5BFEB26291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAC303B-50B6-980A-9D4F-AF5BFEB26291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAC303B-50B6-980A-9D4F-AF5BFEB26291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAC303B-50B6-980A-9D4F-AF5BFEB26291}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
