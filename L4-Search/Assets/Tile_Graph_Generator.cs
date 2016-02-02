@@ -136,19 +136,19 @@ public class Tile_Graph_Generator : MonoBehaviour {
 		//Color the nodes according to their nature.
 		foreach (Tile_Node node in nodeList) {
 			node.TurnVisible ();
-			node.renderer.material.color = Color.white;
+			node.GetComponent<Renderer>().material.color = Color.white;
 		}
 		foreach (Tile_Node node in openList) {
-			node.renderer.material.color = Color.yellow;
+			node.GetComponent<Renderer>().material.color = Color.yellow;
 		}
 		foreach (Tile_Node node in closedList) {
-			node.renderer.material.color = Color.yellow;
+			node.GetComponent<Renderer>().material.color = Color.yellow;
 		}
 		foreach (Tile_Node node in pathList) {
-			node.renderer.material.color = Color.green;
+			node.GetComponent<Renderer>().material.color = Color.green;
 		}
-		startNode.renderer.material.color = Color.blue;
-		endNode.renderer.material.color = Color.red;
+		startNode.GetComponent<Renderer>().material.color = Color.blue;
+		endNode.GetComponent<Renderer>().material.color = Color.red;
 	}
 
 	//Scan the graph for tile placements
@@ -220,9 +220,10 @@ public class Tile_Graph_Generator : MonoBehaviour {
 			if (node.neighborList[i] && !Physics.Linecast (node.transform.position, node.neighborList[i].transform.position, 1000)) {
 				if (!closedList.Contains (node.neighborList[i]) && !openList.Contains (node.neighborList[i])) {
 					node.neighborList[i].prevNode = node;
-					openList.Insert (openList.Count - 1, node.neighborList[i]);
+                    openList.Insert (openList.Count - 1, node.neighborList[i]);
+                    //openList.Insert(0, node.neighborList[i]);
 
-				}
+                }
 			}
 		}
 		closedList.Add (node);
@@ -241,6 +242,7 @@ public class Tile_Graph_Generator : MonoBehaviour {
 		pathList.Add (openList [0]);
 		while(true) {
 			
+            
 			if (pathList[pathList.Count - 1].prevNode == startNode) {
 				pathList.Add (pathList[pathList.Count - 1].prevNode);
 				pathList.Reverse ();
@@ -249,6 +251,7 @@ public class Tile_Graph_Generator : MonoBehaviour {
 			else {
 				pathList.Add (pathList[pathList.Count - 1].prevNode);
 			}
+            
 		}
 	}
 

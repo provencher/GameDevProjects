@@ -16,7 +16,7 @@ public class Tile_Node : MonoBehaviour, IComparer<Tile_Node> {
 	// Use this for initialization
 	void Start ()
 	{
-		renderer.enabled = false;
+		GetComponent<Renderer>().enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -28,13 +28,13 @@ public class Tile_Node : MonoBehaviour, IComparer<Tile_Node> {
 	//Turn the node invisible
 	public void TurnInvisible() 
 	{
-		renderer.enabled = false;
+		GetComponent<Renderer>().enabled = false;
 	}
 
 	//Turn the node visible
 	public void TurnVisible()
 	{
-		renderer.enabled = true;
+		GetComponent<Renderer>().enabled = true;
 	}
 
 	public int Compare(Tile_Node x, Tile_Node y)
