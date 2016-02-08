@@ -24,7 +24,7 @@ public class UnitContoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {       
-        if(!stopGo || (stopGo && GetComponent<Rigidbody>().velocity.magnitude < 0.1f))
+        if(!stopGo || (stopGo && (GetComponent<Rigidbody>().velocity.magnitude < 0.1f || Vector3.Dot(GetComponent<Rigidbody>().velocity.normalized, acceleration.normalized) > 0.5f)))
         {
             if (frozen)
             {
