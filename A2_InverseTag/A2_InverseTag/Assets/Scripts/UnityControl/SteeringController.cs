@@ -22,9 +22,11 @@ public class SteeringController : MonoBehaviour {
 
     public float turnSpeed = 20f;
 
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     public bool smoothing = true;
+    public int numSamplesForSmoothing = 5;
+    private Queue<Vector2> velocitySamples = new Queue<Vector2>();
 
     //Sets to 1 to do velocity smoothin - 0 for acceleration-free movement
     public int notKinetic = 1;
@@ -37,10 +39,13 @@ public class SteeringController : MonoBehaviour {
     public float wanderJitter = 40f;
     private Vector3 wanderTarget;
 
+
+    
+
     // Use this for initialization
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
 
         //stuff for the wander behavior
         float theta = Random.value * 2 * Mathf.PI;
@@ -52,7 +57,7 @@ public class SteeringController : MonoBehaviour {
     /* Updates the velocity of the current game object by the given linear acceleration */
     public void steer(Vector3 linearAcceleration)
     {
-        rb.velocity += linearAcceleration * Time.deltaTime;
+        rb.velocity += (Vector2)linearAcceleration * Time.deltaTime;
 
         if (rb.velocity.magnitude > maxVelocity)
         {
@@ -188,7 +193,34 @@ public class SteeringController : MonoBehaviour {
 
         return acceleration;
     }
-  
+
+    /* Makes the current game object look where he is going */
+    public void lookWhereYoureGoing()
+    {
+        Vector2 direction = rb.velocity;
+
+        if (smoothing)
+        {
+            if (velocitySamples.Count == numSamplesForSmoothing)
+            {
+                velocitySamples.Dequeue();
+            }
+
+            velocitySamples.Enqueue(rb.velocity);
+
+            direction = Vector2.zero;
+
+            foreach (Vector2 v in velocitySamples)
+            {
+                direction += v;
+            }
+
+            direction /= velocitySamples.Count;
+        }
+
+        lookAtDirection(direction);
+    }
+
 
     /* Checks to see if the target is in front of the character */
     public bool isInFront(Vector3 target)
