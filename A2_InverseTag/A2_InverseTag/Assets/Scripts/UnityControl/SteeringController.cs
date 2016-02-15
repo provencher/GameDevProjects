@@ -243,4 +243,6 @@ public class SteeringController : MonoBehaviour {
         SphereCollider col = t.GetComponent<SphereCollider>();
         return Mathf.Max(t.localScale.x, t.localScale.y, t.localScale.z) * col.radius;
     }
+
+
 }

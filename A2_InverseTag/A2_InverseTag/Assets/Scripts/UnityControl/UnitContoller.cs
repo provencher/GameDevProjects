@@ -19,6 +19,7 @@ public class UnitContoller : MonoBehaviour
     Vector3 centerOfMass = Vector3.zero;
     Vector3 targetCoord;
     SteeringController control;
+    Vector3 lastCalculatedTarget = Vector3.zero;
 
     Vector2[] path;
     int pathIndex = 0;
@@ -103,7 +104,7 @@ public class UnitContoller : MonoBehaviour
     Vector2 FindNextPosition(Vector2 targetPos)
     {       
         
-        if(path.Length <= 0)
+        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 2))
         {
             path = Pathfinding.RequestPath(transform.position, targetPos);
             pathIndex = 0;
