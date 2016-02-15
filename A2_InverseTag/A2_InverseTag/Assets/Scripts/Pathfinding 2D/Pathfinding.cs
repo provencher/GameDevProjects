@@ -28,6 +28,7 @@ public class Pathfinding : MonoBehaviour {
 		
 		Node startNode = grid.NodeFromWorldPoint(from);
 		Node targetNode = grid.NodeFromWorldPoint(to);
+        targetNode.debugNode = true;
 		startNode.parent = startNode;
 		
 		

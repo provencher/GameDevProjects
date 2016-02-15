@@ -19,7 +19,7 @@ public class Grid : MonoBehaviour {
 		gridSizeX = Mathf.RoundToInt(gridWorldSize.x/nodeDiameter);
 		gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameter);
 
-		CreateGrid();
+		CreateGrid();       
 	}
 
 	public int MaxSize {
@@ -37,7 +37,7 @@ public class Grid : MonoBehaviour {
 				Vector2 worldPoint = worldBottomLeft + Vector2.right * (x * nodeDiameter + nodeRadius) + Vector2.up * (y * nodeDiameter + nodeRadius);
 				bool walkable = (Physics2D.OverlapCircle(worldPoint,nodeRadius,unwalkableMask) == null); // if no collider2D is returned by overlap circle, then this node is walkable
 
-				grid[x,y] = new Node(walkable,worldPoint, x,y);
+				grid[x,y] = new Node(walkable,worldPoint, x,y);                
 			}
 		}
 	}
@@ -82,6 +82,10 @@ public class Grid : MonoBehaviour {
 				Gizmos.color = Color.red;
 				if (n.walkable)
 					Gizmos.color = Color.white;
+                if(n.debugNode)
+                {
+                    Gizmos.color = Color.blue;
+                }
 
 				Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter-.1f));
 			}

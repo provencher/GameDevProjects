@@ -12,6 +12,8 @@ public class Node : IHeapItem<Node> {
 	public int hCost;
 	public Node parent;
 	int heapIndex;
+
+    public bool debugNode = false;
 	
 	public Node(bool _walkable, Vector2 _worldPos, int _gridX, int _gridY) {
 		walkable = _walkable;
