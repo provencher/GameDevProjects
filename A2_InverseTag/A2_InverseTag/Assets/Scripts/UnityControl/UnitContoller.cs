@@ -120,7 +120,7 @@ public class UnitContoller : MonoBehaviour
                 {
                     avoidance -= 2 * (Vector2)(thing.transform.position - transform.position);
                 }
-                else
+                else if(!thing.GetComponent<UnitContoller>())
                 {
                     avoidance -= (Vector2)(thing.transform.position - transform.position);
                 }
@@ -134,7 +134,7 @@ public class UnitContoller : MonoBehaviour
         
         if(avoidance.magnitude > 0)
         {
-            control.steer(control.seek(avoidance + (Vector2)transform.position));
+            control.steer(control.arrive(avoidance + (Vector2)transform.position));
         }
         else
         {
