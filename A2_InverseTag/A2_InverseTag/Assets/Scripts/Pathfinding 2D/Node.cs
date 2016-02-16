@@ -10,6 +10,7 @@ public class Node : IHeapItem<Node> {
 
 	public int gCost;
 	public int hCost;
+    public int wallCost = 0;
 	public Node parent;
 	int heapIndex;
 

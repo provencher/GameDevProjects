@@ -40,8 +40,20 @@ public class Grid : MonoBehaviour {
 				grid[x,y] = new Node(walkable,worldPoint, x,y);                
 			}
 		}
-        grid[0, 0].debugNode = true;
-        grid[gridSizeX -1, gridSizeY - 1].debugNode = true;
+
+        foreach(var node in grid)
+        {
+            foreach(var neighbour in GetNeighbours(node, 1))
+            {
+                if(!(neighbour.walkable))
+                {
+                    node.wallCost++;
+                }
+            }
+        }
+
+        //grid[0, 0].debugNode = true;
+        //grid[gridSizeX -1, gridSizeY - 1].debugNode = true;
 	}
 	
 
@@ -81,7 +93,7 @@ public class Grid : MonoBehaviour {
 		Gizmos.DrawWireCube(transform.position,new Vector2(gridWorldSize.x,gridWorldSize.y));
 		if (grid != null && displayGridGizmos) {
 			foreach (Node n in grid) {
-				Gizmos.color = Color.red;
+				Gizmos.color = Color.black;
 				if (n.walkable)
 					Gizmos.color = Color.white;
                 if(n.debugNode)

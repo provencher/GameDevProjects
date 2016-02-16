@@ -109,7 +109,7 @@ public class UnitContoller : MonoBehaviour
         targetCoord = FindNextPosition(targetCoord);
 
         Vector2 avoidance = Vector2.zero;
-        
+        /*
         Collider2D[] stuff = Physics2D.OverlapCircleAll(transform.position, 0.5f);
         //Scan for stuff around
         foreach (var thing in stuff)
@@ -140,8 +140,9 @@ public class UnitContoller : MonoBehaviour
         {
             control.steer(control.arrive(targetCoord));
         }
+        */
 
-
+        control.steer(control.arrive(targetCoord));
 
         control.lookWhereYoureGoing();
     }    
