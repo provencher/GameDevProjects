@@ -5,8 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(SteeringController))]
 public class UnitContoller : MonoBehaviour
 {   
-    public bool seeker = false;
-    public bool fleer = false;
+    public bool seeker = false;  
     public bool frozen = false;
     public bool lastFrozen = false;
     bool hasHalted = false;
@@ -38,28 +37,27 @@ public class UnitContoller : MonoBehaviour
 
     void FindTarget()
     {
-        if(!seeker || !fleer)
+        
+        if (!target && gameObject.tag == "Seeker")
         {
-            if (!target && gameObject.tag == "Seeker")
+            seeker = true;
+            GetComponent<MeshRenderer>().material.color = Color.red;
+            target = GameObject.FindGameObjectWithTag("Unit").transform;
+        }
+        else if (seekers.Count == 0 && gameObject.tag == "Unit")
+        {
+            seeker = false;
+            GetComponent<MeshRenderer>().material.color = Color.green;
+            GameObject[] units = GameObject.FindGameObjectsWithTag("Seeker");
+            foreach(var u in units)
             {
-                seeker = true;
-                GetComponent<MeshRenderer>().material.color = Color.green;
-                target = GameObject.FindGameObjectWithTag("Unit").transform;
-            }
-            else if (seekers.Count == 0 && gameObject.tag == "Unit")
-            {
-                fleer = true;
-                GetComponent<MeshRenderer>().material.color = Color.red;
-                GameObject[] units = GameObject.FindGameObjectsWithTag("Seeker");
-                foreach(var u in units)
+                if(u.tag == "Seeker")
                 {
-                    if(u.tag == "Seeker")
-                    {
-                        seekers.Add(u.transform);
-                    }                    
-                }
+                    seekers.Add(u.transform);
+                }                    
             }
-        }          
+        }
+                
     }
     Vector2 FindCenterOfMass()
     {
@@ -74,16 +72,29 @@ public class UnitContoller : MonoBehaviour
 
     Vector2 FindDestination()
     {
-        Vector2 desintation = Vector2.zero;
+        Vector2 destination = Vector2.zero;
         if (seeker)
         {
-            desintation = target.position;
+            destination = target.position;
+            control.maxVelocity = 2;
         }
         else
-        {
-            desintation = FindCenterOfMass();
+        {       
+            
+
+            Vector2 avoid = FindCenterOfMass();
+            destination = avoid;
+            float maxDist = 0;
+            foreach(var l in GameObject.FindGameObjectsWithTag("Landmark"))
+            {
+                if (Vector3.Distance((l.transform.position + new Vector3(0, 0.65f, 0)), avoid) > maxDist)
+                {
+                    maxDist = Vector3.Distance((l.transform.position + new Vector3(0, 0.65f, 0)), avoid);
+                    destination = (l.transform.position + new Vector3(0, 0.65f, 0));
+                }                
+            }            
         }
-        return desintation;
+        return destination;
     }
  
     // Update is called once per frame
@@ -97,7 +108,41 @@ public class UnitContoller : MonoBehaviour
         //Generate Path
         targetCoord = FindNextPosition(targetCoord);
 
-        control.steer(control.arrive(targetCoord) + (Vector3)control.WallAvoidanceSteering());        
+        Vector2 avoidance = Vector2.zero;
+        
+        Collider2D[] stuff = Physics2D.OverlapCircleAll(transform.position, 0.5f);
+        //Scan for stuff around
+        foreach (var thing in stuff)
+        {
+            if(thing != gameObject.GetComponent<CircleCollider2D>())
+            {
+                if (thing.GetComponent<UnitContoller>() && !seeker && thing.GetComponent<UnitContoller>().seeker)
+                {
+                    avoidance -= 2 * (Vector2)(thing.transform.position - transform.position);
+                }
+                else
+                {
+                    avoidance -= (Vector2)(thing.transform.position - transform.position);
+                }
+            }
+               
+        }
+        if(stuff.Length > 0)
+        {
+            avoidance /= stuff.Length;
+        }
+        
+        if(avoidance.magnitude > 0)
+        {
+            control.steer(control.seek(avoidance + (Vector2)transform.position));
+        }
+        else
+        {
+            control.steer(control.arrive(targetCoord));
+        }
+
+
+
         control.lookWhereYoureGoing();
     }    
 

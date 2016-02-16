@@ -9,15 +9,15 @@ public class SteeringController : MonoBehaviour {
     public float regularVelocity = 3.5f;
 
     /* How far ahead the ray should extend */
-    public float mainWhiskerLen = 5;
-    public float sideWhiskerLen = 3;
+    public float mainWhiskerLen = 0.2f;
+    public float sideWhiskerLen = 0.2f;
     public float sideWhiskerAngle = 45f;
     /* The distance away from the collision that we wish go */
-    public float wallAvoidDistance = 1;
+    public float wallAvoidDistance = 0.1f;
     
 
     /* The maximum acceleration */
-    public float maxAcceleration = 10f;
+    public float maxAcceleration = 5f;
 
     /* The radius from the target that means we are close enough and have arrived */
     public float targetRadius = 0.005f;
@@ -291,7 +291,7 @@ public class SteeringController : MonoBehaviour {
             targetPostition = targetPostition + new Vector2(-hit.normal.y, hit.normal.x);
         }
 
-        return -seek(targetPostition, maxAcceleration);        
+        return seek(targetPostition, maxAcceleration);        
     }
 
     private bool findObstacle(Vector3[] rayDirs, out RaycastHit2D firstHit)
