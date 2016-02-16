@@ -27,18 +27,18 @@ public class Pathfinding : MonoBehaviour {
 		bool pathSuccess = false;
 		
 		Node startNode = grid.NodeFromWorldPoint(from);
-		Node targetNode = grid.NodeFromWorldPoint(to);
-        targetNode.debugNode = true;
+		Node targetNode = grid.NodeFromWorldPoint(to);        
 		startNode.parent = startNode;
 		
 		
 		if (startNode.walkable && targetNode.walkable) {
 			Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
 			HashSet<Node> closedSet = new HashSet<Node>();
-			openSet.Add(startNode);
-			
-			while (openSet.Count > 0) {
+			openSet.Add(startNode);            
+
+            while (openSet.Count > 0) {
 				Node currentNode = openSet.RemoveFirst();
+                //currentNode.debugNode = true;
 				closedSet.Add(currentNode);
 				
 				if (currentNode == targetNode) {

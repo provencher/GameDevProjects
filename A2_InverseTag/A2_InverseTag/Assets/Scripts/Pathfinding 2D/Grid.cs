@@ -40,6 +40,8 @@ public class Grid : MonoBehaviour {
 				grid[x,y] = new Node(walkable,worldPoint, x,y);                
 			}
 		}
+        grid[0, 0].debugNode = true;
+        grid[gridSizeX -1, gridSizeY - 1].debugNode = true;
 	}
 	
 
