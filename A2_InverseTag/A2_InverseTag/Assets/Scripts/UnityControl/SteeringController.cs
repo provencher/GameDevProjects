@@ -8,6 +8,14 @@ public class SteeringController : MonoBehaviour {
     public float halfVelocity = 3.5f;
     public float regularVelocity = 3.5f;
 
+    /* How far ahead the ray should extend */
+    public float mainWhiskerLen = 5;
+    public float sideWhiskerLen = 3;
+    public float sideWhiskerAngle = 45f;
+    /* The distance away from the collision that we wish go */
+    public float wallAvoidDistance = 1;
+    
+
     /* The maximum acceleration */
     public float maxAcceleration = 10f;
 
@@ -244,5 +252,70 @@ public class SteeringController : MonoBehaviour {
         return Mathf.Max(t.localScale.x, t.localScale.y, t.localScale.z) * col.radius;
     }
 
+    /* Returns the orientation as a unit vector */
+    private Vector3 orientationToVector(float orientation)
+    {
+        return new Vector3(Mathf.Cos(orientation), Mathf.Sin(orientation), 0);
+    }
+
+    //2D wallavoidance
+    public Vector2 WallAvoidanceSteering()
+    {
+        Vector3 acceleration = Vector3.zero;
+
+        /* Creates the ray direction vector */
+        Vector3[] rayDirs = new Vector3[3];
+        rayDirs[0] = rb.velocity.normalized;
+
+        float orientation = Mathf.Atan2(rb.velocity.y, rb.velocity.x);
+
+        rayDirs[1] = orientationToVector(orientation + sideWhiskerAngle * Mathf.Deg2Rad);
+        rayDirs[2] = orientationToVector(orientation - sideWhiskerAngle * Mathf.Deg2Rad);
+
+        RaycastHit2D hit;
+
+        /* If no collision do nothing */
+        if (!findObstacle(rayDirs, out hit))
+        {
+            return acceleration;
+        }
+
+        /* Create a target away from the wall to seek */
+        Vector2 targetPostition = hit.point + hit.normal * wallAvoidDistance;
+
+        /* If velocity and the collision normal are parallel then move the target a bit to
+         the left or right of the normal */
+        Vector3 cross = Vector3.Cross(rb.velocity, hit.normal);
+        if (cross.magnitude < 0.005f)
+        {
+            targetPostition = targetPostition + new Vector2(-hit.normal.y, hit.normal.x);
+        }
+
+        return -seek(targetPostition, maxAcceleration);        
+    }
+
+    private bool findObstacle(Vector3[] rayDirs, out RaycastHit2D firstHit)
+    {
+        firstHit = new RaycastHit2D();
+        bool foundObs = false;
+
+        for (int i = 0; i < rayDirs.Length; i++)
+        {
+            float rayDist = (i == 0) ? mainWhiskerLen : sideWhiskerLen;
+
+            RaycastHit2D hit;
+
+            if (hit = Physics2D.Raycast(transform.position, rayDirs[i], rayDist))
+            {
+                foundObs = true;
+                firstHit = hit;
+                break;
+            }
+
+            //Debug.DrawLine(transform.position, transform.position + rayDirs[i] * rayDist);
+        }
+
+        return foundObs;
+    }
 
 }

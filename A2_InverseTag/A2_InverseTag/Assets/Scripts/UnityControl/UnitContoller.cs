@@ -97,7 +97,7 @@ public class UnitContoller : MonoBehaviour
         //Generate Path
         targetCoord = FindNextPosition(targetCoord);
 
-        control.steer(control.arrive(targetCoord));
+        control.steer(control.arrive(targetCoord) + (Vector3)control.WallAvoidanceSteering());        
         control.lookWhereYoureGoing();
     }    
 
