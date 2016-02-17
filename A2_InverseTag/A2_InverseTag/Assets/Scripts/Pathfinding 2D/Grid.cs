@@ -45,15 +45,12 @@ public class Grid : MonoBehaviour {
         {
             foreach(var neighbour in GetNeighbours(node, 1))
             {
-                if(!(neighbour.walkable))
+                if(!neighbour.walkable)
                 {
                     node.wallCost++;
                 }
             }
         }
-
-        //grid[0, 0].debugNode = true;
-        //grid[gridSizeX -1, gridSizeY - 1].debugNode = true;
 	}
 	
 

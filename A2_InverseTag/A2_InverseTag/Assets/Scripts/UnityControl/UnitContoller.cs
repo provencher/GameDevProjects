@@ -85,6 +85,7 @@ public class UnitContoller : MonoBehaviour
             Vector2 avoid = FindCenterOfMass();
             destination = avoid;
             float maxDist = 0;
+     
             foreach(var l in GameObject.FindGameObjectsWithTag("Landmark"))
             {
                 if (Vector3.Distance((l.transform.position + new Vector3(0, 0.65f, 0)), avoid) > maxDist)

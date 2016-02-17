@@ -120,12 +120,16 @@ public class Pathfinding : MonoBehaviour {
 	}
 	
 	int GetDistance(Node nodeA, Node nodeB) {
-		int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-		int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
-		
+		//int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+		//int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+
+        return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX),2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
+        
+        /*
 		if (dstX > dstY)
 			return 14*dstY + 10* (dstX-dstY);
 		return 14*dstX + 10 * (dstY-dstX);
+        */
 	}
 	
 	
