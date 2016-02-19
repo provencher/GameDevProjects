@@ -12,7 +12,7 @@ public class Pathfinding : MonoBehaviour {
     
 	Grid grid;
 	static Pathfinding instance;
-    public bool showSearch;
+    //public bool showSearch;
 	
 	void Awake() {
 		grid = GetComponent<Grid>();
@@ -23,12 +23,7 @@ public class Pathfinding : MonoBehaviour {
 		return instance.FindPath (from, to);
 	}
 	
-	Vector2[] FindPath(Vector2 from, Vector2 to) {
-
-        if (showSearch)
-        {
-            grid.ResetGridColors();
-        }
+	Vector2[] FindPath(Vector2 from, Vector2 to) {       
 
         Stopwatch sw = new Stopwatch();
 		sw.Start();

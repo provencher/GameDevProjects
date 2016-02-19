@@ -23,11 +23,12 @@ public class UnitContoller : MonoBehaviour
     Vector2[] path;
     int pathIndex = 0;
     Vector2 currentWaypoint = Vector2.zero;
-
+    TagGameLogic game;
 
     // Use this for initialization
     void Start()
     {
+        game = FindObjectOfType<TagGameLogic>();
         acceleration = Vector3.zero;
         targetCoord = Vector3.zero;
         seekers = new List<Transform>();
@@ -75,7 +76,7 @@ public class UnitContoller : MonoBehaviour
         Vector2 destination = Vector2.zero;
         if (seeker)
         {
-            destination = target.position;
+            destination = target.position + new Vector3(Random.Range(0f, 0.4f), Random.Range(0f, 0.4f),0);
             control.maxVelocity = 2;
         }
         else
@@ -83,12 +84,13 @@ public class UnitContoller : MonoBehaviour
 
             Vector3 avoid = FindCenterOfMass();
             destination = avoid;
-            float maxDist = 99999;
-            Vector3 fleeDirection = (transform.position - avoid).normalized;
+            float maxDist = 0;
+            Vector3 fleeDirection = (transform.position - avoid).normalized * 0.5f;
 
+            //CHeck if position exists in graph -> is walkable
             foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
             {
-                if (Vector3.Distance((l.transform.position + fleeDirection), transform.position) < maxDist)
+                if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > maxDist)
                 {
                     maxDist = Vector3.Distance((l.transform.position + fleeDirection), avoid);
                     destination = (l.transform.position + fleeDirection);
@@ -101,62 +103,33 @@ public class UnitContoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FindTarget();        
-        targetCoord = FindDestination();
-
-        Vector2 acceleration = Vector2.zero;
-
-        //Generate Path
-        targetCoord = FindNextPosition(targetCoord);
-
-        Vector2 avoidance = Vector2.zero;
-
-
-        acceleration += (Vector2)control.wanderPosition() / 10;
-     
-
-        /*
-        Collider2D[] stuff = Physics2D.OverlapCircleAll(transform.position, 0.5f);
-        //Scan for stuff around
-        foreach (var thing in stuff)
+        if(game.started)
         {
-            if(thing != gameObject.GetComponent<CircleCollider2D>())
+            
+            Vector2 accleration = Vector2.zero;
+            /*
+            if (GetComponent<Rigidbody2D>().velocity.magnitude < 0.001f)
             {
-                if (thing.GetComponent<UnitContoller>() && !seeker && thing.GetComponent<UnitContoller>().seeker)
-                {
-                    avoidance -= 2 * (Vector2)(thing.transform.position - transform.position);
-                }
-                else if(!thing.GetComponent<UnitContoller>())
-                {
-                    avoidance -= (Vector2)(thing.transform.position - transform.position);
-                }
+                acceleration = control.seek((Vector2)control.wanderPosition());
             }
-               
-        }
-        if(stuff.Length > 0)
-        {
-            avoidance /= stuff.Length;
-        }
-        
-        if(avoidance.magnitude > 0)
-        {
-            control.steer(control.arrive(avoidance + (Vector2)transform.position));
-        }
-        else
-        {
-            control.steer(control.arrive(targetCoord));
-        }
-        */
+            else
+            {
+                FindTarget();      
+                acceleration = control.arrive(FindNextPosition(FindDestination()));
+            }
+            */
 
-        control.steer(control.seek(targetCoord));
-
-        control.lookWhereYoureGoing();
+            FindTarget();
+            acceleration = control.seek(FindNextPosition(FindDestination()));
+            control.steer(acceleration);
+            control.lookWhereYoureGoing();
+        }       
     }    
 
     Vector2 FindNextPosition(Vector2 targetPos)
     {       
         
-        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 2))
+        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 5))
         {
             path = Pathfinding.RequestPath(transform.position, targetPos);
             pathIndex = 0;
@@ -197,7 +170,12 @@ public class UnitContoller : MonoBehaviour
    
 
     void OnCollisionEnter(Collision collision)
-    {      
+    {   
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        {
+            GetComponent<Rigidbody2D>().AddForce((transform.position - collision.gameObject.transform.position).normalized * GetComponent<Rigidbody2D>().mass, ForceMode2D.Impulse);
+        }
+
 
         if(collision.gameObject.tag == "Unit" || collision.gameObject.tag == "Seeker")
         {

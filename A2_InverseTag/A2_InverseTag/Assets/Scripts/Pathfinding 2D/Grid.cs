@@ -19,7 +19,9 @@ public class Grid : MonoBehaviour {
 		gridSizeX = Mathf.RoundToInt(gridWorldSize.x/nodeDiameter);
 		gridSizeY = Mathf.RoundToInt(gridWorldSize.y/nodeDiameter);
 
-		CreateGrid();       
+		CreateGrid();
+        
+        InvokeRepeating("ResetGridColors", 0.1f, 0.5f);  
 	}
     public void ResetGridColors()
     {

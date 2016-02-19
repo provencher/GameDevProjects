@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class TagGameLogic : MonoBehaviour {
     
     public int numberOfPlayers = 4;
-    public List<GameObject> players;
+    public UnitContoller[] players;
 
     [SerializeField]
     public GameObject gameBoundary;
@@ -14,12 +14,9 @@ public class TagGameLogic : MonoBehaviour {
     [SerializeField]
     public GameObject unitPrefab;
 
-    private bool started = false;
+    public bool started = false;
     public bool oneRemaining = false;
     public int frozenPlayers = 0;
-
-    public bool isKinetic;
-    public bool isStopGo; 
 
     [SerializeField]
     public GameObject button;
@@ -27,94 +24,36 @@ public class TagGameLogic : MonoBehaviour {
     [SerializeField]
     public GameObject stopButton;
 
-	// Use this for initialization
-	void Start () {
-        players = new List<GameObject>();
-
-        isKinetic = false;
-        isStopGo = false;
-    }
-
-    public void ToggleKinematic()
-    {
-        if(isKinetic)
-        {
-            isKinetic = false;
-            button.GetComponent<Text>().text = "Steering";
-        }
-        else
-        {
-            isKinetic = true;
-            button.GetComponent<Text>().text = "Kinematic";
-        }
-
-        SetKinematic(isKinetic);
-    }
-
-    void SetKinematic(bool kinematic)
-    {
-        SteeringController[] units = FindObjectsOfType<SteeringController>();
-        foreach (var unit in units)
-        {
-            unit.notKinetic = (kinematic ? 0 : 1);
-        }
-    }
-
-    public void StopGo()
-    {
-        if (!isStopGo)
-        {
-            isStopGo = true;
-            stopButton.GetComponent<Text>().text = "Stop & Go";
-        }
-        else
-        {
-            isStopGo = false;
-            stopButton.GetComponent<Text>().text = "Smooth";
-        }
-
-        SetStopGo(isStopGo);
-    }
-
-    void SetStopGo(bool stopgo)
-    {
-        UnitContoller[] units = FindObjectsOfType<UnitContoller>();
-        foreach (var unit in units)
-        {
-            unit.stopGo = stopgo;
-        }
-    }
+	
 
     void SetupGame()
-    {
-        started = true;
-        Vector3 topRight = gameBoundary.GetComponent<ScreenEdge>().topRight;
-        Vector3 bottomLeft = gameBoundary.GetComponent<ScreenEdge>().bottomLeft;       
+    {       
 
-        //Spawn Players
-        for(int i = 0; i < numberOfPlayers; i++ )
+        players = FindObjectsOfType<UnitContoller>();
+
+        //Select first non-seeker
+        int seekerIndex = Random.Range(0, players.Length);
+
+        for (var i = 0; i < players.Length; i++)
         {
-            float spawnX = Random.Range(bottomLeft.x, topRight.x);
-            float spawnY = Random.Range(bottomLeft.y, topRight.y);
-
-            Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
-
-            players.Add((GameObject)Instantiate(unitPrefab, spawnPos, Quaternion.identity));
-
-            if (isKinetic)
+            if(i != seekerIndex)
             {
-                players[players.Count - 1].GetComponent<SteeringController>().notKinetic = 0;
+                //players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
+                players[i].gameObject.tag = "Seeker";
+                players[i].GetComponent<SteeringController>().maxVelocity = 2;
+                players[i].GetComponent<SteeringController>().maxAcceleration = 5;
+
+            }
+            else
+            {
+                //players[seekerIndex].GetComponent<UnitContoller>().seeker = false;
+                players[i].gameObject.tag = "Unit";
+                players[i].GetComponent<SteeringController>().maxAcceleration = 10;
+                players[i].GetComponent<SteeringController>().maxVelocity = 5;
+
             }
         }
-
-        //Select first seeker
-        int seekerIndex = Random.Range(0, players.Count - 1);
-        players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
-        players[seekerIndex].gameObject.tag = "Seeker";
-
-
-        SetStopGo(isStopGo);
-        SetKinematic(isKinetic);
+        started = true;
     }
 	
     void CheckIfAllFrozen()
@@ -159,7 +98,7 @@ public class TagGameLogic : MonoBehaviour {
 	void Update () {
         if(!started)
         {
-            //SetupGame();
+            SetupGame();
         }
         //CheckIfAllFrozen();
         //UpdateUnitVelocities();
