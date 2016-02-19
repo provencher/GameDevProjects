@@ -21,6 +21,13 @@ public class Grid : MonoBehaviour {
 
 		CreateGrid();       
 	}
+    public void ResetGridColors()
+    {
+        foreach(var n in grid)
+        {
+            n.debugNode = false;
+        }
+    }
 
 	public int MaxSize {
 		get {

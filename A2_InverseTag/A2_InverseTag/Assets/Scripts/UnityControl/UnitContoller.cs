@@ -79,19 +79,19 @@ public class UnitContoller : MonoBehaviour
             control.maxVelocity = 2;
         }
         else
-        {       
-            
+        {                  
 
-            Vector2 avoid = FindCenterOfMass();
+            Vector3 avoid = FindCenterOfMass();
             destination = avoid;
-            float maxDist = 0;
-     
-            foreach(var l in GameObject.FindGameObjectsWithTag("Landmark"))
+            float maxDist = 99999;
+            Vector3 fleeDirection = (transform.position - avoid).normalized;
+
+            foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
             {
-                if (Vector3.Distance((l.transform.position + new Vector3(0, 0.65f, 0)), avoid) > maxDist)
+                if (Vector3.Distance((l.transform.position + fleeDirection), transform.position) < maxDist)
                 {
-                    maxDist = Vector3.Distance((l.transform.position + new Vector3(0, 0.65f, 0)), avoid);
-                    destination = (l.transform.position + new Vector3(0, 0.65f, 0));
+                    maxDist = Vector3.Distance((l.transform.position + fleeDirection), avoid);
+                    destination = (l.transform.position + fleeDirection);
                 }                
             }            
         }
@@ -110,6 +110,11 @@ public class UnitContoller : MonoBehaviour
         targetCoord = FindNextPosition(targetCoord);
 
         Vector2 avoidance = Vector2.zero;
+
+
+        acceleration += (Vector2)control.wanderPosition() / 10;
+     
+
         /*
         Collider2D[] stuff = Physics2D.OverlapCircleAll(transform.position, 0.5f);
         //Scan for stuff around
@@ -143,7 +148,7 @@ public class UnitContoller : MonoBehaviour
         }
         */
 
-        control.steer(control.arrive(targetCoord));
+        control.steer(control.seek(targetCoord));
 
         control.lookWhereYoureGoing();
     }    
@@ -192,7 +197,8 @@ public class UnitContoller : MonoBehaviour
    
 
     void OnCollisionEnter(Collision collision)
-    {
+    {      
+
         if(collision.gameObject.tag == "Unit" || collision.gameObject.tag == "Seeker")
         {
             if (collision.gameObject.GetComponent<UnitContoller>().seeker && !seeker && !frozen)

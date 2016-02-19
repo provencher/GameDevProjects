@@ -6,8 +6,13 @@ using System;
 
 public class Pathfinding : MonoBehaviour {
 
+
+    public enum heuristics { NULL, EUCLIDIAN, CLUSTER};
+    public heuristics heuristic;
+    
 	Grid grid;
 	static Pathfinding instance;
+    public bool showSearch;
 	
 	void Awake() {
 		grid = GetComponent<Grid>();
@@ -19,8 +24,13 @@ public class Pathfinding : MonoBehaviour {
 	}
 	
 	Vector2[] FindPath(Vector2 from, Vector2 to) {
-		
-		Stopwatch sw = new Stopwatch();
+
+        if (showSearch)
+        {
+            grid.ResetGridColors();
+        }
+
+        Stopwatch sw = new Stopwatch();
 		sw.Start();
 		
 		Vector2[] waypoints = new Vector2[0];
@@ -34,12 +44,14 @@ public class Pathfinding : MonoBehaviour {
 		if (startNode.walkable && targetNode.walkable) {
 			Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
 			HashSet<Node> closedSet = new HashSet<Node>();
-			openSet.Add(startNode);            
+			openSet.Add(startNode);
+            startNode.debugNode = true;     
 
             while (openSet.Count > 0) {
 				Node currentNode = openSet.RemoveFirst();
-                //currentNode.debugNode = true;
+                currentNode.debugNode = true;
 				closedSet.Add(currentNode);
+                //currentNode.debugNode = false;
 				
 				if (currentNode == targetNode) {
 					sw.Stop();
@@ -52,21 +64,28 @@ public class Pathfinding : MonoBehaviour {
 					if (!neighbour.walkable || closedSet.Contains(neighbour)) {
 						continue;
 					}
-					
-					int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour)+TurningCost(currentNode,neighbour);
+
+                    int newMovementCostToNeighbour =  currentNode.gCost + GetDistance(currentNode, neighbour)+TurningCost(currentNode,neighbour);
 					if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour)) {
-						neighbour.gCost = newMovementCostToNeighbour;
+                        neighbour.gCost = newMovementCostToNeighbour;
 						neighbour.hCost = (GetDistance(neighbour, targetNode) * neighbour.wallCost);
 						neighbour.parent = currentNode;
 						
 						if (!openSet.Contains(neighbour))
-							openSet.Add(neighbour);
-						else 
-							openSet.UpdateItem(neighbour);
-					}
-				}
-			}
-		}
+                        {
+                            openSet.Add(neighbour);
+                            neighbour.debugNode = true;
+                        }							
+						else
+                        {
+                            openSet.UpdateItem(neighbour);
+                        }
+                    }
+				}                
+            }           
+        }  
+        
+      
 
 		if (pathSuccess) {
 			waypoints = RetracePath(startNode,targetNode);
@@ -110,21 +129,31 @@ public class Pathfinding : MonoBehaviour {
 		Vector2 directionOld = Vector2.zero;
 		
 		for (int i = 1; i < path.Count; i ++) {
-			Vector2 directionNew = new Vector2(path[i-1].gridX - path[i].gridX,path[i-1].gridY - path[i].gridY);
-			if (directionNew != directionOld) {
+			//Vector2 directionNew = new Vector2(path[i-1].gridX - path[i].gridX,path[i-1].gridY - path[i].gridY);
+			//if (directionNew != directionOld) {
 				waypoints.Add(path[i].worldPosition);
-			}
-			directionOld = directionNew;
+			//}
+			//directionOld = directionNew;
 		}
 		return waypoints.ToArray();
 	}
 	
-	int GetDistance(Node nodeA, Node nodeB) {
-		//int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-		//int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+	int GetDistance(Node nodeA, Node nodeB) {   
+        switch(heuristic)
+        {
+            case heuristics.CLUSTER:
+                
+            case heuristics.EUCLIDIAN:
+                return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX), 2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
+            default:
+                return 1;
+        }
 
-        return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX),2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
-        
+        //int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+        //int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+
+        //return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX),2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
+        return 1;
         /*
 		if (dstX > dstY)
 			return 14*dstY + 10* (dstX-dstY);
