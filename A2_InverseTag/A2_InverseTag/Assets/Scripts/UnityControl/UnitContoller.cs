@@ -175,8 +175,14 @@ public class UnitContoller : MonoBehaviour
 
    
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter2D(Collision2D coll)
     {   
+        if(gameObject.tag == "Unit" && coll.gameObject.tag == "Seeker")
+        {
+            Application.LoadLevel(0);
+        }
+        
+        /*
         if(collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             GetComponent<Rigidbody2D>().AddForce((transform.position - collision.gameObject.transform.position).normalized * GetComponent<Rigidbody2D>().mass, ForceMode2D.Impulse);
@@ -204,6 +210,7 @@ public class UnitContoller : MonoBehaviour
                 collision.gameObject.GetComponent<UnitContoller>().frozen = false;
             }
         }   
+        */
     }
 
     public void OnDrawGizmos()

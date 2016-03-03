@@ -50,7 +50,6 @@ public class TagGameLogic : MonoBehaviour {
                 players[i].gameObject.tag = "Unit";
                 players[i].GetComponent<SteeringController>().maxAcceleration = 10;
                 players[i].GetComponent<SteeringController>().maxVelocity = 5;
-
             }
         }
         started = true;
