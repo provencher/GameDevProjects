@@ -84,18 +84,24 @@ public class UnitContoller : MonoBehaviour
 
             Vector3 avoid = FindCenterOfMass();
             destination = avoid;
-            float maxDist = 0;
-            Vector3 fleeDirection = (transform.position - avoid).normalized * 0.5f;
-
+            float distanceFromMass = 0;
+            Vector3 fleeDirection = (transform.position - avoid).normalized * 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
+            float distanceFromPlayer = 999;
             //CHeck if position exists in graph -> is walkable
-            foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
+            var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
+            foreach (var l in landMarks)
             {
-                if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > maxDist)
+                if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > distanceFromMass &&
+                    Vector3.Distance((l.transform.position + fleeDirection), transform.position) < distanceFromPlayer &&
+                    Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + fleeDirection).walkable)
                 {
-                    maxDist = Vector3.Distance((l.transform.position + fleeDirection), avoid);
+                    distanceFromMass = Vector3.Distance((l.transform.position + fleeDirection), avoid);
+                    distanceFromPlayer = Vector3.Distance((l.transform.position + fleeDirection), transform.position);
                     destination = (l.transform.position + fleeDirection);
                 }                
-            }            
+            }             
+            
+                     
         }
         return destination;
     }

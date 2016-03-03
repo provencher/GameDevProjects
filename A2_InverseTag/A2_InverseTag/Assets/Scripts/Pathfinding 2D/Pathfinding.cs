@@ -10,8 +10,8 @@ public class Pathfinding : MonoBehaviour {
     public enum heuristics { NULL, EUCLIDIAN, CLUSTER};
     public heuristics heuristic;
     
-	Grid grid;
-	static Pathfinding instance;
+	public Grid grid;
+    public static Pathfinding instance;
     //public bool showSearch;
 	
 	void Awake() {
