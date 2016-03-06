@@ -46,12 +46,13 @@ public class UnitContoller : MonoBehaviour
         {
             seeker = true;
             GetComponent<MeshRenderer>().material.color = Color.red;
+            control.maxVelocity = 2;
             target = GameObject.FindGameObjectWithTag("Unit").transform;
         }
         else if (seekers.Count == 0 && gameObject.tag == "Unit")
         {
             seeker = false;
-            GetComponent<MeshRenderer>().material.color = Color.green;
+            GetComponent<MeshRenderer>().material.color = Color.yellow;
             GameObject[] units = GameObject.FindGameObjectsWithTag("Seeker");
             foreach(var u in units)
             {
@@ -60,14 +61,14 @@ public class UnitContoller : MonoBehaviour
                     seekers.Add(u.transform);
                 }                    
             }
-        }
-                
+        }                
     }
+    bool nearEnemies = false;
     Vector2 FindCenterOfMass()
     {
         var center = Vector3.zero;
 
-        var surroundingEnemies = Physics2D.OverlapCircleAll(transform.position, 2);
+        var surroundingEnemies = Physics2D.OverlapCircleAll(transform.position, hazardDistance*4);
         int proximityEnemies = 0;
         foreach (var s in surroundingEnemies)
         {
@@ -82,9 +83,11 @@ public class UnitContoller : MonoBehaviour
         if(proximityEnemies > 0)
         {
             center /= proximityEnemies;
+            nearEnemies = true;
         }
         else
         {
+            nearEnemies = false;
             foreach (var s in seekers)
             {
                 center += s.position;
@@ -101,15 +104,51 @@ public class UnitContoller : MonoBehaviour
         Vector2 destination = Vector2.zero;
         if (seeker)
         {
-            /*+ new Vector3(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f),0)*/;
-            int sentry = 0;
-            do
+            Vector3 seek = target.transform.position;
+            Vector3 seekDirection = (seek - transform.position).normalized;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position + transform.forward * hazardDistance, seekDirection);
+            if(true|| hit && hit.collider.gameObject.tag == "Unit")
             {
-                destination = (Vector2)target.position + new Vector2(Random.Range(-hazardDistance, hazardDistance), Random.Range(-hazardDistance, hazardDistance));
-                sentry++;
-            } while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable && sentry < 5);
+                int sentry = 0;
+                do
+                {
+                    destination = (Vector2)target.position + new Vector2(Random.Range(-hazardDistance, hazardDistance), Random.Range(-hazardDistance, hazardDistance));
+                    sentry++;
+                } while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable && sentry < 5);
 
-            control.maxVelocity = 2;
+            }
+            else
+            {
+                
+                destination = seek;
+                float distanceFromIT = 999;
+                seekDirection *= hazardDistance;              
+                bool pickedDestination = false;
+                var destinations = new List<Vector3>();
+
+                //CHeck if position exists in graph -> is walkable
+                var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
+                foreach (var l in landMarks)
+                {
+                    if (Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + seekDirection).walkable)
+                    {
+                        destinations.Add(l.transform.position + seekDirection);
+
+                        if (Vector3.Distance((l.transform.position + seekDirection), seek) < distanceFromIT)                        
+                        {
+                            distanceFromIT = Vector3.Distance((l.transform.position + seekDirection), seek);
+                            destination = (l.transform.position + seekDirection);
+                            pickedDestination = true;
+                        }
+                    }
+                }
+
+                if (!pickedDestination && destinations.Count > 0)
+                {
+                    destination = destinations[Random.Range(0, destinations.Count)];
+                }
+
+            }           
         }
         else
         {                  
@@ -117,7 +156,7 @@ public class UnitContoller : MonoBehaviour
             Vector3 avoid = FindCenterOfMass();
             destination = avoid;
             float distanceFromMass = 0;
-            Vector3 fleeDirection = (transform.position - avoid).normalized * 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
+            Vector3 fleeDirection = (transform.position - avoid).normalized * hazardDistance;
             float distanceFromPlayer = 999;
             bool pickedDestination = false;
             var destinations = new List<Vector3>();
@@ -159,7 +198,16 @@ public class UnitContoller : MonoBehaviour
             Vector2 accleration = Vector2.zero;       
 
             FindTarget();
-            acceleration = control.seek(FindNextPosition(FindDestination()));
+
+            if(gameObject.tag == "Unit" && nearEnemies)
+            {
+                acceleration = (-control.seek(FindCenterOfMass())*0.25f + control.seek(FindNextPosition(FindDestination()))*0.75f);
+            }
+            else
+            {
+                acceleration = control.seek(FindNextPosition(FindDestination()));
+            }
+
             control.steer(acceleration);
             control.lookWhereYoureGoing();
         }       
@@ -169,7 +217,7 @@ public class UnitContoller : MonoBehaviour
     {       
         
         if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 2))
-        {
+        {           
             path = Pathfinding.RequestPath(transform.position, targetPos);
             pathIndex = 0;
             if (path.Length > 0)
@@ -187,7 +235,7 @@ public class UnitContoller : MonoBehaviour
             pathIndex++;
             if (pathIndex >= path.Length)
             {
-                path = Pathfinding.RequestPath(transform.position, targetPos);
+                path = Pathfinding.RequestPath(transform.position, lastCalculatedTarget);
                 pathIndex = 0;
             }
 
@@ -199,8 +247,7 @@ public class UnitContoller : MonoBehaviour
             {
                 currentWaypoint = transform.position;
             }          
-        }
-
+        }        
         return currentWaypoint;
     }
 
