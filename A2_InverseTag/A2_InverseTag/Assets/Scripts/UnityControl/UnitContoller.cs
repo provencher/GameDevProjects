@@ -25,6 +25,8 @@ public class UnitContoller : MonoBehaviour
     Vector2 currentWaypoint = Vector2.zero;
     TagGameLogic game;
 
+    float hazardDistance;
+
     // Use this for initialization
     void Start()
     {
@@ -34,6 +36,7 @@ public class UnitContoller : MonoBehaviour
         seekers = new List<Transform>();
         control = GetComponent<SteeringController>();
         path = new Vector2[0];
+        hazardDistance = 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
     }
 
     void FindTarget()
@@ -98,13 +101,13 @@ public class UnitContoller : MonoBehaviour
         Vector2 destination = Vector2.zero;
         if (seeker)
         {
-            destination = target.position /*+ new Vector3(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f),0)*/;
+            /*+ new Vector3(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f),0)*/;
             int sentry = 0;
-            while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable || sentry < 4)
+            do
             {
-                destination += new Vector2(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f));
+                destination = (Vector2)target.position + new Vector2(Random.Range(-hazardDistance, hazardDistance), Random.Range(-hazardDistance, hazardDistance));
                 sentry++;
-            }
+            } while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable && sentry < 5);
 
             control.maxVelocity = 2;
         }
@@ -165,7 +168,7 @@ public class UnitContoller : MonoBehaviour
     Vector2 FindNextPosition(Vector2 targetPos)
     {       
         
-        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 5))
+        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 2))
         {
             path = Pathfinding.RequestPath(transform.position, targetPos);
             pathIndex = 0;
@@ -179,7 +182,7 @@ public class UnitContoller : MonoBehaviour
             }
         }
 
-        if (Vector3.Distance((Vector3)currentWaypoint, transform.position) < 0.01f)
+        if (Vector3.Distance((Vector3)currentWaypoint, transform.position) < 0.05f)
         {
             pathIndex++;
             if (pathIndex >= path.Length)
