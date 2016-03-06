@@ -63,11 +63,33 @@ public class UnitContoller : MonoBehaviour
     Vector2 FindCenterOfMass()
     {
         var center = Vector3.zero;
-        foreach (var s in seekers)
+
+        var surroundingEnemies = Physics2D.OverlapCircleAll(transform.position, 2);
+        int proximityEnemies = 0;
+        foreach (var s in surroundingEnemies)
         {
-            center += s.position;
-        }        
-        return center / seekers.Count;
+            if(s.gameObject.tag == "Seeker")
+            {
+                center += s.transform.position;
+                proximityEnemies++;
+            }
+        }
+
+
+        if(proximityEnemies > 0)
+        {
+            center /= proximityEnemies;
+        }
+        else
+        {
+            foreach (var s in seekers)
+            {
+                center += s.position;
+            }
+            center /= seekers.Count;
+        }
+         
+        return center;
     }
 
 
@@ -87,20 +109,32 @@ public class UnitContoller : MonoBehaviour
             float distanceFromMass = 0;
             Vector3 fleeDirection = (transform.position - avoid).normalized * 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
             float distanceFromPlayer = 999;
+            bool pickedDestination = false;
+            var destinations = new List<Vector3>();
+
             //CHeck if position exists in graph -> is walkable
             var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
             foreach (var l in landMarks)
             {
-                if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > distanceFromMass &&
-                    Vector3.Distance((l.transform.position + fleeDirection), transform.position) < distanceFromPlayer &&
-                    Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + fleeDirection).walkable)
+                if (Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + fleeDirection).walkable)
                 {
-                    distanceFromMass = Vector3.Distance((l.transform.position + fleeDirection), avoid);
-                    distanceFromPlayer = Vector3.Distance((l.transform.position + fleeDirection), transform.position);
-                    destination = (l.transform.position + fleeDirection);
+                    destinations.Add(l.transform.position + fleeDirection);
+
+                    if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > distanceFromMass &&
+                    Vector3.Distance((l.transform.position + fleeDirection), transform.position) < distanceFromPlayer)
+                    {
+                        distanceFromMass = Vector3.Distance((l.transform.position + fleeDirection), avoid);
+                        distanceFromPlayer = Vector3.Distance((l.transform.position + fleeDirection), transform.position);
+                        destination = (l.transform.position + fleeDirection);
+                        pickedDestination = true;
+                    }                    
                 }                
-            }             
+            } 
             
+            if(!pickedDestination && destinations.Count > 0)
+            {
+                destination = destinations[Random.Range(0, destinations.Count)];
+            }            
                      
         }
         return destination;
