@@ -107,7 +107,7 @@ public class UnitContoller : MonoBehaviour
             Vector3 seek = target.transform.position;
             Vector3 seekDirection = (seek - transform.position).normalized;
             RaycastHit2D hit = Physics2D.Raycast(transform.position + transform.forward * hazardDistance, seekDirection);
-            if(true|| hit && hit.collider.gameObject.tag == "Unit")
+            if(hit && hit.collider.gameObject.tag == "Unit")
             {
                 int sentry = 0;
                 do
