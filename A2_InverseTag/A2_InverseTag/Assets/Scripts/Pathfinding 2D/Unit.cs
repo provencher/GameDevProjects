@@ -37,8 +37,7 @@ public class Unit : MonoBehaviour {
 	public void OnDrawGizmos() {
 		if (path != null) {
 			for (int i = targetIndex; i < path.Length; i ++) {
-				Gizmos.color = Color.black;
-				//Gizmos.DrawCube((Vector3)path[i], Vector3.one *.5f);
+                Gizmos.color = Color.black;			
 
 				if (i == targetIndex) {
 					Gizmos.DrawLine(transform.position, path[i]);

@@ -98,7 +98,14 @@ public class UnitContoller : MonoBehaviour
         Vector2 destination = Vector2.zero;
         if (seeker)
         {
-            destination = target.position + new Vector3(Random.Range(0f, 0.4f), Random.Range(0f, 0.4f),0);
+            destination = target.position /*+ new Vector3(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f),0)*/;
+            int sentry = 0;
+            while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable || sentry < 4)
+            {
+                destination += new Vector2(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f));
+                sentry++;
+            }
+
             control.maxVelocity = 2;
         }
         else
@@ -146,18 +153,7 @@ public class UnitContoller : MonoBehaviour
         if(game.started)
         {
             
-            Vector2 accleration = Vector2.zero;
-            /*
-            if (GetComponent<Rigidbody2D>().velocity.magnitude < 0.001f)
-            {
-                acceleration = control.seek((Vector2)control.wanderPosition());
-            }
-            else
-            {
-                FindTarget();      
-                acceleration = control.arrive(FindNextPosition(FindDestination()));
-            }
-            */
+            Vector2 accleration = Vector2.zero;       
 
             FindTarget();
             acceleration = control.seek(FindNextPosition(FindDestination()));
@@ -215,36 +211,6 @@ public class UnitContoller : MonoBehaviour
         {
             Application.LoadLevel(0);
         }
-        
-        /*
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
-        {
-            GetComponent<Rigidbody2D>().AddForce((transform.position - collision.gameObject.transform.position).normalized * GetComponent<Rigidbody2D>().mass, ForceMode2D.Impulse);
-        }
-
-
-        if(collision.gameObject.tag == "Unit" || collision.gameObject.tag == "Seeker")
-        {
-            if (collision.gameObject.GetComponent<UnitContoller>().seeker && !seeker && !frozen)
-            {
-                GameObject.FindObjectOfType<TagGameLogic>().frozenPlayers++;
-                frozen = true;
-
-                if (GameObject.FindObjectOfType<TagGameLogic>().frozenPlayers == GameObject.FindObjectOfType<TagGameLogic>().numberOfPlayers - 1)
-                {
-                    lastFrozen = true;
-                }              
-                
-            }
-
-            if (collision.gameObject.GetComponent<UnitContoller>().frozen && !seeker)
-            {
-                GameObject.FindObjectOfType<TagGameLogic>().frozenPlayers--;
-                collision.gameObject.GetComponent<UnitContoller>().lastFrozen = false;
-                collision.gameObject.GetComponent<UnitContoller>().frozen = false;
-            }
-        }   
-        */
     }
 
     public void OnDrawGizmos()
@@ -253,8 +219,7 @@ public class UnitContoller : MonoBehaviour
         {
             for (int i = pathIndex; i < path.Length; i++)
             {
-                Gizmos.color = Color.black;
-                //Gizmos.DrawCube((Vector3)path[i], Vector3.one *.5f);
+                Gizmos.color = Color.black;              
 
                 if (i == pathIndex)
                 {

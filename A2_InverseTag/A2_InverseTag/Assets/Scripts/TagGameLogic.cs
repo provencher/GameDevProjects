@@ -13,17 +13,12 @@ public class TagGameLogic : MonoBehaviour {
 
     [SerializeField]
     public GameObject unitPrefab;
+   
 
     public bool started = false;
     public bool oneRemaining = false;
     public int frozenPlayers = 0;
-
-    [SerializeField]
-    public GameObject button;
-
-    [SerializeField]
-    public GameObject stopButton;
-
+ 
 	
 
     void SetupGame()
@@ -38,7 +33,6 @@ public class TagGameLogic : MonoBehaviour {
         {
             if(i != seekerIndex)
             {
-                //players[seekerIndex].GetComponent<UnitContoller>().seeker = true;
                 players[i].gameObject.tag = "Seeker";
                 players[i].GetComponent<SteeringController>().maxVelocity = 2;
                 players[i].GetComponent<SteeringController>().maxAcceleration = 5;
@@ -46,7 +40,6 @@ public class TagGameLogic : MonoBehaviour {
             }
             else
             {
-                //players[seekerIndex].GetComponent<UnitContoller>().seeker = false;
                 players[i].gameObject.tag = "Unit";
                 players[i].GetComponent<SteeringController>().maxAcceleration = 10;
                 players[i].GetComponent<SteeringController>().maxVelocity = 5;
@@ -98,8 +91,6 @@ public class TagGameLogic : MonoBehaviour {
         if(!started)
         {
             SetupGame();
-        }
-        //CheckIfAllFrozen();
-        //UpdateUnitVelocities();
+        }       
     }
 }

@@ -1,24 +1,40 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;
 
 public class Pathfinding : MonoBehaviour {
-
+    [SerializeField]
+    public GameObject ToggleHeuristicButton;
+    private Text buttonText;
 
     public enum heuristics { NULL, EUCLIDIAN, CLUSTER};
     public heuristics heuristic;
     
 	public Grid grid;
     public static Pathfinding instance;
-    //public bool showSearch;
-	
-	void Awake() {
+
+    public void ToggleHeuristic()
+    {
+        heuristic = (heuristic == heuristics.NULL ? heuristics.EUCLIDIAN : heuristics.NULL);
+        PlayerPrefs.SetInt("Heuristic", (int)heuristic);
+        buttonText.text = (heuristic == heuristics.NULL ? "NULL" : "EUCLIDIAN");
+    }
+
+    void Awake() {
 		grid = GetComponent<Grid>();
 		instance = this;
-	}
+        buttonText = ToggleHeuristicButton.GetComponent<Text>();
+        if (PlayerPrefs.HasKey("Heuristic"))
+        {
+            heuristic = (heuristics)PlayerPrefs.GetInt("Heuristic", 0);
+        }        
 
+        buttonText.text = (heuristic == heuristics.NULL ? "NULL" : "EUCLIDIAN");
+    }
+    
 	public static Vector2[] RequestPath(Vector2 from, Vector2 to) {
 		return instance.FindPath (from, to);
 	}
@@ -45,12 +61,10 @@ public class Pathfinding : MonoBehaviour {
             while (openSet.Count > 0) {
 				Node currentNode = openSet.RemoveFirst();
                 currentNode.debugNode = true;
-				closedSet.Add(currentNode);
-                //currentNode.debugNode = false;
+				closedSet.Add(currentNode);              
 				
 				if (currentNode == targetNode) {
-					sw.Stop();
-					//print ("Path found: " + sw.ElapsedMilliseconds + " ms");
+					sw.Stop();				
 					pathSuccess = true;
 					break;
 				}
@@ -123,12 +137,8 @@ public class Pathfinding : MonoBehaviour {
 		List<Vector2> waypoints = new List<Vector2>();
 		Vector2 directionOld = Vector2.zero;
 		
-		for (int i = 1; i < path.Count; i ++) {
-			//Vector2 directionNew = new Vector2(path[i-1].gridX - path[i].gridX,path[i-1].gridY - path[i].gridY);
-			//if (directionNew != directionOld) {
-				waypoints.Add(path[i].worldPosition);
-			//}
-			//directionOld = directionNew;
+		for (int i = 1; i < path.Count; i ++) {			
+			waypoints.Add(path[i].worldPosition);			
 		}
 		return waypoints.ToArray();
 	}
@@ -136,24 +146,12 @@ public class Pathfinding : MonoBehaviour {
 	int GetDistance(Node nodeA, Node nodeB) {   
         switch(heuristic)
         {
-            case heuristics.CLUSTER:
-                
+            case heuristics.CLUSTER:                
             case heuristics.EUCLIDIAN:
                 return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX), 2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
             default:
                 return 1;
-        }
-
-        //int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-        //int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
-
-        //return Mathf.RoundToInt(Mathf.Sqrt(Mathf.Pow((nodeA.gridX - nodeB.gridX),2) + Mathf.Pow((nodeA.gridY - nodeB.gridY), 2)));
-        return 1;
-        /*
-		if (dstX > dstY)
-			return 14*dstY + 10* (dstX-dstY);
-		return 14*dstX + 10 * (dstY-dstX);
-        */
+        }  
 	}
 	
 	
