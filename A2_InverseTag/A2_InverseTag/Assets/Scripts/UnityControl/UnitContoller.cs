@@ -16,7 +16,7 @@ public class UnitContoller : MonoBehaviour
     Transform target;
     List<Transform> seekers;
     Vector3 centerOfMass = Vector3.zero;
-    Vector3 targetCoord;
+    Vector3 targetLandMark;
     SteeringController control;
     Vector3 lastCalculatedTarget = Vector3.zero;
 
@@ -32,7 +32,7 @@ public class UnitContoller : MonoBehaviour
     {
         game = FindObjectOfType<TagGameLogic>();
         acceleration = Vector3.zero;
-        targetCoord = Vector3.zero;
+        targetLandMark = Vector3.zero;
         seekers = new List<Transform>();
         control = GetComponent<SteeringController>();
         path = new Vector2[0];
@@ -122,7 +122,18 @@ public class UnitContoller : MonoBehaviour
             {   
                 destination = focus;
                 float distanceFromIT = 999;
-                seekDirection *= hazardDistance;            
+                seekDirection *= hazardDistance;
+
+                HashSet<Vector3> otherTargets = new HashSet<Vector3>();
+                
+                foreach (var s in FindObjectsOfType<UnitContoller>())
+                {
+                    if (s.gameObject.tag == "Seeker" && s != this)
+                    {
+                        otherTargets.Add(s.targetLandMark);
+                    }
+                }
+                
 
                 foreach (var l in landMarks)
                 {
@@ -130,8 +141,10 @@ public class UnitContoller : MonoBehaviour
                     {
                         destinations.Add(l.transform.position + seekDirection);
 
-                        if (Vector3.Distance((l.transform.position + seekDirection), focus) < distanceFromIT)                        
+                        if ((Vector3.Distance((l.transform.position + seekDirection), focus) < distanceFromIT)      
+                            && !otherTargets.Contains(l.transform.position))                  
                         {
+                            targetLandMark = l.transform.position;
                             distanceFromIT = Vector3.Distance((l.transform.position + seekDirection), focus);
                             destination = (l.transform.position + seekDirection);
                             pickedDestination = true;
@@ -185,31 +198,45 @@ public class UnitContoller : MonoBehaviour
             float distance = (fleeSeek ? 999 : 0);
             float bestDistance = distance;
 
+            HashSet<Vector3> otherTargets = new HashSet<Vector3>();
+            if (!fleeSeek)
+            {
+                foreach (var s in FindObjectsOfType<UnitContoller>())
+                {
+                    if (s.gameObject.tag == "Seeker" && s != this)
+                    {
+                        otherTargets.Add(s.targetLandMark);
+                    }
+                }
+            }          
+
             do
             {
                 distance = Vector3.Distance(landMarks[sentry].transform.position, focus);
                 if ((fleeSeek && bestDistance > distance)
-                || (!fleeSeek && bestDistance < distance))
+                || (!fleeSeek && bestDistance < distance && !otherTargets.Contains((Vector2)landMarks[sentry].transform.position)))
                 {
                     //int modifier = Random.Range(-1, 1) < 0? -1: 1;
                     Vector2 direction = (focus - transform.position);
-                    destination = (Vector2)landMarks[sentry].transform.position - direction;                   
+                    targetLandMark = landMarks[sentry].transform.position;
+                    destination = (Vector2)targetLandMark - direction;                   
                 }                
-            } while ( ++sentry < landMarks.Length);           
-          
+            } while ( ++sentry < landMarks.Length); 
         }
         return destination;
     }
- 
+    
+
     // Update is called once per frame
     void Update()
     {
         if(game.started)
         {
             
-            Vector2 accleration = Vector2.zero;       
+            Vector2 accleration = Vector2.zero;
+            
+            FindTarget();         
 
-            FindTarget();
             if (nearEnemies && gameObject.tag == "Unit")
             {
                 Vector3 centerOfMass = FindCenterOfMass();
@@ -217,9 +244,9 @@ public class UnitContoller : MonoBehaviour
             }
             else
             {
-                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()));
-
+                acceleration = control.arrive(FindNextPosition(FindDestination()));
             }
+            
 
             control.steer(acceleration);
             control.lookWhereYoureGoing();
