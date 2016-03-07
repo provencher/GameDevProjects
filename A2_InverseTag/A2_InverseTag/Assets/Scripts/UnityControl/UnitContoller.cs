@@ -67,20 +67,21 @@ public class UnitContoller : MonoBehaviour
     Vector2 FindCenterOfMass()
     {
         var center = Vector3.zero;
-
-        var surroundingEnemies = Physics2D.OverlapCircleAll(transform.position, hazardDistance*4);
         int proximityEnemies = 0;
+        
+        var surroundingEnemies = Physics2D.OverlapCircleAll(transform.position, hazardDistance*4);
+       
         foreach (var s in surroundingEnemies)
-        {
-            if(s.gameObject.tag == "Seeker")
-            {
+        {          
+            if (s.gameObject.tag == "Seeker" && Physics2D.Raycast(transform.position, s.transform.position - transform.position))
+            {               
                 center += s.transform.position;
-                proximityEnemies++;
-            }
+                proximityEnemies++; 
+            }             
         }
 
-
-        if(proximityEnemies > 0)
+    
+        if (proximityEnemies > 0)
         {
             center /= proximityEnemies;
             nearEnemies = true;
@@ -102,89 +103,100 @@ public class UnitContoller : MonoBehaviour
     Vector2 FindDestination()
     {
         Vector2 destination = Vector2.zero;
+        var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
+        var destinations = new List<Vector3>();
+        bool pickedDestination = false;
+        Vector3 focus = Vector3.zero;
+
         if (seeker)
         {
-            Vector3 seek = target.transform.position;
-            Vector3 seekDirection = (seek - transform.position).normalized;
+            focus = target.transform.position;
+            Vector3 seekDirection = (focus - transform.position).normalized;
             RaycastHit2D hit = Physics2D.Raycast(transform.position + transform.forward * hazardDistance, seekDirection);
+
             if(hit && hit.collider.gameObject.tag == "Unit")
             {
-                int sentry = 0;
-                do
-                {
-                    destination = (Vector2)target.position + new Vector2(Random.Range(-hazardDistance, hazardDistance), Random.Range(-hazardDistance, hazardDistance));
-                    sentry++;
-                } while (!Pathfinding.instance.grid.NodeFromWorldPoint(destination).walkable && sentry < 5);
-
+                return hit.transform.position;                
             }
             else
-            {
-                
-                destination = seek;
+            {   
+                destination = focus;
                 float distanceFromIT = 999;
-                seekDirection *= hazardDistance;              
-                bool pickedDestination = false;
-                var destinations = new List<Vector3>();
+                seekDirection *= hazardDistance;            
 
-                //CHeck if position exists in graph -> is walkable
-                var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
                 foreach (var l in landMarks)
                 {
                     if (Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + seekDirection).walkable)
                     {
                         destinations.Add(l.transform.position + seekDirection);
 
-                        if (Vector3.Distance((l.transform.position + seekDirection), seek) < distanceFromIT)                        
+                        if (Vector3.Distance((l.transform.position + seekDirection), focus) < distanceFromIT)                        
                         {
-                            distanceFromIT = Vector3.Distance((l.transform.position + seekDirection), seek);
+                            distanceFromIT = Vector3.Distance((l.transform.position + seekDirection), focus);
                             destination = (l.transform.position + seekDirection);
                             pickedDestination = true;
                         }
                     }
-                }
-
-                if (!pickedDestination && destinations.Count > 0)
-                {
-                    destination = destinations[Random.Range(0, destinations.Count)];
-                }
-
-            }           
+                }  
+            }      
+                 
         }
         else
-        {                  
+        {
 
-            Vector3 avoid = FindCenterOfMass();
-            destination = avoid;
-            float distanceFromMass = 0;
-            Vector3 fleeDirection = (transform.position - avoid).normalized * hazardDistance;
-            float distanceFromPlayer = 999;
-            bool pickedDestination = false;
-            var destinations = new List<Vector3>();
+            focus = FindCenterOfMass();
+            /*
+            destination = focus;
+            float distanceFromMass = 0;            
+            Vector3 fleeDirection = (transform.position - focus).normalized * hazardDistance;                    
 
-            //CHeck if position exists in graph -> is walkable
-            var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
             foreach (var l in landMarks)
             {
+                //Check if position exists in graph -> is walkable            
                 if (Pathfinding.instance.grid.NodeFromWorldPoint(l.transform.position + fleeDirection).walkable)
                 {
                     destinations.Add(l.transform.position + fleeDirection);
 
-                    if (Vector3.Distance((l.transform.position + fleeDirection), avoid) > distanceFromMass &&
-                    Vector3.Distance((l.transform.position + fleeDirection), transform.position) < distanceFromPlayer)
+                    if (Vector3.Distance((l.transform.position + fleeDirection), focus) > distanceFromMass)
                     {
-                        distanceFromMass = Vector3.Distance((l.transform.position + fleeDirection), avoid);
-                        distanceFromPlayer = Vector3.Distance((l.transform.position + fleeDirection), transform.position);
+                        distanceFromMass = Vector3.Distance((l.transform.position + fleeDirection), focus);                        
                         destination = (l.transform.position + fleeDirection);
-                        pickedDestination = true;
+                        pickedDestination = true;                                            
                     }                    
                 }                
             } 
-            
-            if(!pickedDestination && destinations.Count > 0)
+            */                  
+        }
+
+        if (!pickedDestination || destinations.Count == 0)
+        {
+            //Shuffle landmarks
+            for (int i = 0; i < landMarks.Length; i++)
             {
-                destination = destinations[Random.Range(0, destinations.Count)];
-            }            
-                     
+                var temp = landMarks[i];
+                int randomIndex = Random.Range(i, destinations.Count);
+                landMarks[i] = landMarks[randomIndex];
+                landMarks[randomIndex] = temp;
+            }
+
+
+            int sentry = 0;
+            bool fleeSeek = (gameObject.tag == "Unit" ? false : true);
+            float distance = (fleeSeek ? 999 : 0);
+            float bestDistance = distance;
+
+            do
+            {
+                distance = Vector3.Distance(landMarks[sentry].transform.position, focus);
+                if ((fleeSeek && bestDistance > distance)
+                || (!fleeSeek && bestDistance < distance))
+                {
+                    //int modifier = Random.Range(-1, 1) < 0? -1: 1;
+                    Vector2 direction = (focus - transform.position);
+                    destination = (Vector2)landMarks[sentry].transform.position - direction;                    
+                }                
+            } while ( ++sentry < landMarks.Length);           
+          
         }
         return destination;
     }
@@ -201,24 +213,28 @@ public class UnitContoller : MonoBehaviour
 
             if(gameObject.tag == "Unit" && nearEnemies)
             {
-                acceleration = (-control.seek(FindCenterOfMass())*0.25f + control.seek(FindNextPosition(FindDestination()))*0.75f);
+                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()) - ((Vector3)FindCenterOfMass() - transform.position)*hazardDistance);
             }
             else
             {
-                acceleration = control.seek(FindNextPosition(FindDestination()));
+                acceleration = control.arrive(FindNextPosition(FindDestination()));
             }
 
             control.steer(acceleration);
             control.lookWhereYoureGoing();
         }       
-    }    
+    }
 
+    float timeOfLastPath = 0;
+    Vector2 lastTarget = Vector2.zero;
     Vector2 FindNextPosition(Vector2 targetPos)
     {       
         
-        if(path.Length <= 0 || (Vector3.Distance(lastCalculatedTarget, (Vector3)targetPos) > 2))
+        if(path.Length <= 0 || ((Vector3.Distance(lastTarget, targetPos) > hazardDistance) && (Time.time - timeOfLastPath) > 0.4f))
         {           
             path = Pathfinding.RequestPath(transform.position, targetPos);
+            timeOfLastPath = Time.time;
+            lastTarget = targetPos;
             pathIndex = 0;
             if (path.Length > 0)
             {
@@ -226,16 +242,18 @@ public class UnitContoller : MonoBehaviour
             }
             else
             {
-                currentWaypoint = transform.position;
+                currentWaypoint = targetPos;
             }
         }
 
-        if (Vector3.Distance((Vector3)currentWaypoint, transform.position) < 0.05f)
+        if (Vector3.Distance((Vector3)currentWaypoint, transform.position) < hazardDistance)
         {
             pathIndex++;
             if (pathIndex >= path.Length)
             {
-                path = Pathfinding.RequestPath(transform.position, lastCalculatedTarget);
+                path = Pathfinding.RequestPath(transform.position, targetPos);
+                timeOfLastPath = Time.time;
+                lastTarget = targetPos;
                 pathIndex = 0;
             }
 
@@ -245,7 +263,7 @@ public class UnitContoller : MonoBehaviour
             }
             else
             {
-                currentWaypoint = transform.position;
+                currentWaypoint = targetPos;
             }          
         }        
         return currentWaypoint;
