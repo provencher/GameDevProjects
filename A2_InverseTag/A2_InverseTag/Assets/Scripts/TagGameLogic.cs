@@ -18,11 +18,28 @@ public class TagGameLogic : MonoBehaviour {
     public bool started = false;
     public bool oneRemaining = false;
     public int frozenPlayers = 0;
- 
+
+    public bool viewWaypoints = true;
+    public List<GameObject> landmarkObjs;
+
+    public void ToggleViewWayPoints()
+    {
+        viewWaypoints = (viewWaypoints ? false : true);
+        foreach (var l in landmarkObjs)
+        {            
+            l.GetComponent<MeshRenderer>().enabled = viewWaypoints;           
+        }      
+    }
 	
 
     void SetupGame()
-    {       
+    {
+
+        foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
+        {            
+            landmarkObjs.Add(l);
+            l.GetComponent<MeshRenderer>().enabled = false;      
+        }
 
         players = FindObjectsOfType<UnitContoller>();
 
