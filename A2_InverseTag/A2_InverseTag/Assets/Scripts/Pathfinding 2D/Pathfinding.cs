@@ -127,15 +127,14 @@ public class Pathfinding : MonoBehaviour {
 			path.Add(currentNode);
 			currentNode = currentNode.parent;
 		}
-		Vector2[] waypoints = SimplifyPath(path);
+		Vector2[] waypoints = MakeArrayFromGridPositions(path);
 		Array.Reverse(waypoints);
 		return waypoints;
 		
 	}
 	
-	Vector2[] SimplifyPath(List<Node> path) {
+	Vector2[] MakeArrayFromGridPositions(List<Node> path) {
 		List<Vector2> waypoints = new List<Vector2>();
-		Vector2 directionOld = Vector2.zero;
 		
 		for (int i = 1; i < path.Count; i ++) {			
 			waypoints.Add(path[i].worldPosition);			

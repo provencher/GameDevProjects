@@ -193,7 +193,7 @@ public class UnitContoller : MonoBehaviour
                 {
                     //int modifier = Random.Range(-1, 1) < 0? -1: 1;
                     Vector2 direction = (focus - transform.position);
-                    destination = (Vector2)landMarks[sentry].transform.position - direction;                    
+                    destination = (Vector2)landMarks[sentry].transform.position - direction;                   
                 }                
             } while ( ++sentry < landMarks.Length);           
           
@@ -210,14 +210,15 @@ public class UnitContoller : MonoBehaviour
             Vector2 accleration = Vector2.zero;       
 
             FindTarget();
-
-            if(gameObject.tag == "Unit" && nearEnemies)
+            if (nearEnemies && gameObject.tag == "Unit")
             {
-                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()) - ((Vector3)FindCenterOfMass() - transform.position)*hazardDistance);
+                Vector3 centerOfMass = FindCenterOfMass();
+                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()) - (centerOfMass - transform.position) * hazardDistance);
             }
             else
             {
-                acceleration = control.arrive(FindNextPosition(FindDestination()));
+                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()));
+
             }
 
             control.steer(acceleration);
