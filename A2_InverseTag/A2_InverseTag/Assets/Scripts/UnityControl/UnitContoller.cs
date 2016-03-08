@@ -118,7 +118,7 @@ public class UnitContoller : MonoBehaviour
             if(hit && hit.collider.gameObject.tag == "Unit")
             {
                 unitInSight = true;
-                return target.position;//hit.transform.position;                
+                return hit.transform.position;                
             }
             else
             {   
@@ -311,7 +311,7 @@ public class UnitContoller : MonoBehaviour
         }
         else
         {
-            GetComponent<Rigidbody2D>().AddForce(-(transform.position - coll.gameObject.transform.position).normalized * 100);
+            GetComponent<Rigidbody2D>().AddForce((transform.position - coll.gameObject.transform.position).normalized * 100);
         }
     }
 
