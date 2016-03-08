@@ -19,7 +19,7 @@ public class TagGameLogic : MonoBehaviour {
     public bool oneRemaining = false;
     public int frozenPlayers = 0;
 
-    public bool viewWaypoints = true;
+    public bool viewWaypoints = false;
     public List<GameObject> landmarkObjs;
 
     public void ToggleViewWayPoints()

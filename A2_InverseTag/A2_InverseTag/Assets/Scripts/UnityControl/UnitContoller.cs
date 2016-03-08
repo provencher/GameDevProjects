@@ -99,9 +99,10 @@ public class UnitContoller : MonoBehaviour
         return center;
     }
 
-
+    bool unitInSight = false;
     Vector2 FindDestination()
     {
+        unitInSight = false;
         Vector2 destination = Vector2.zero;
         var landMarks = GameObject.FindGameObjectsWithTag("Landmark");
         var destinations = new List<Vector3>();
@@ -116,7 +117,8 @@ public class UnitContoller : MonoBehaviour
 
             if(hit && hit.collider.gameObject.tag == "Unit")
             {
-                return hit.transform.position;                
+                unitInSight = true;
+                return target.position;//hit.transform.position;                
             }
             else
             {   
@@ -235,16 +237,16 @@ public class UnitContoller : MonoBehaviour
             
             Vector2 accleration = Vector2.zero;
             
-            FindTarget();         
-
+            FindTarget();
+            Vector2 targetCoordinate = FindDestination();
             if (nearEnemies && gameObject.tag == "Unit")
             {
                 Vector3 centerOfMass = FindCenterOfMass();
-                acceleration = control.arrive((Vector3)FindNextPosition(FindDestination()) - (centerOfMass - transform.position) * hazardDistance);
-            }
+                acceleration = control.arrive((Vector3)FindNextPosition(targetCoordinate) - (centerOfMass - transform.position) * hazardDistance);
+            }            
             else
             {
-                acceleration = control.arrive(FindNextPosition(FindDestination()));
+                acceleration = control.arrive(FindNextPosition(targetCoordinate));
             }
             
 
@@ -306,6 +308,10 @@ public class UnitContoller : MonoBehaviour
         if(gameObject.tag == "Unit" && coll.gameObject.tag == "Seeker")
         {
             Application.LoadLevel(0);
+        }
+        else
+        {
+            GetComponent<Rigidbody2D>().AddForce(-(transform.position - coll.gameObject.transform.position).normalized * 100);
         }
     }
 
