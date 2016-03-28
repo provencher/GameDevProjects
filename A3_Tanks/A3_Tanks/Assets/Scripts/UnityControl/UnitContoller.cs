@@ -48,15 +48,19 @@ public class UnitContoller : NetworkBehaviour
         //initialize();
     }
 
+    float TargetPickedTime = 0;
+    float TargetTimer = 3.0f;
     void FindTarget()
     {
         
-        if (!target && gameObject.tag == "Seeker")
+        if ((Time.time - TargetPickedTime > TargetTimer) || !target && gameObject.tag == "Seeker")
         {
             seeker = true;
             GetComponent<MeshRenderer>().material.color = Color.red;
             control.maxVelocity = 2;
-            target = GameObject.FindGameObjectWithTag("Unit").transform;
+            var us = GameObject.FindGameObjectsWithTag("Unit");
+            target = us[Random.Range(0, us.Length)].transform;          
+            TargetPickedTime = Time.time;
         }
         else if (seekers.Count == 0 && gameObject.tag == "Unit")
         {

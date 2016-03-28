@@ -24,6 +24,8 @@ namespace Complete
 
         public bool is2D = false;
 
+        public GameObject Renderers;
+
       
         private void Awake ()
         {
@@ -41,6 +43,21 @@ namespace Complete
         {
             //GetComponent<MeshRenderer>().material.color = Color.blue;
             Initialize();
+            if (Renderers)
+            {
+                foreach(Transform child in Renderers.transform)
+                {
+                    if (child.GetComponent<MeshRenderer>())
+                    {
+                        child.GetComponent<MeshRenderer>().material.color = Color.blue;
+                    }
+                }
+            }
+
+            foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
+            {                
+                l.GetComponent<MeshRenderer>().enabled = false;
+            }
         }
 
         private void OnEnable()

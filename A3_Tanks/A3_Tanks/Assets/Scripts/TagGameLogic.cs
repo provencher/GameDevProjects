@@ -53,7 +53,7 @@ public class TagGameLogic : NetworkBehaviour
             players[i].GetComponent<UnitContoller>().initialize();
             //players[i].GetComponent<Complete.TankMovement>().Initialize();
 
-            if (i != seekerIndex)
+            if (true || i != seekerIndex)
             {
                 players[i].gameObject.tag = "Seeker";
                 players[i].GetComponent<SteeringController>().maxVelocity = 2;

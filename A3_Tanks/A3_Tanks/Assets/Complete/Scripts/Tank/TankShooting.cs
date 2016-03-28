@@ -32,7 +32,7 @@ namespace Complete
         }
 
 
-        private void Start ()
+        public override void OnStartLocalPlayer()
         {
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
@@ -44,6 +44,11 @@ namespace Complete
 
         private void Update ()
         {
+            if (!isLocalPlayer)
+            {
+                return;
+            }
+
             // The slider should have a default value of the minimum launch force.
             m_AimSlider.value = m_MinLaunchForce;
 
