@@ -20,7 +20,7 @@ namespace Complete
         }
 
 
-        private void OnTriggerEnter (Collider other)
+        private void OnCollisionEnter2D(Collision2D coll)
         {
 			// Collect all the colliders in a sphere from the shell's current position to a radius of the explosion radius.
             Collider[] colliders = Physics.OverlapSphere (transform.position, m_ExplosionRadius, m_TankMask);
@@ -29,14 +29,14 @@ namespace Complete
             for (int i = 0; i < colliders.Length; i++)
             {
                 // ... and find their rigidbody.
-                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody> ();
+                Rigidbody2D targetRigidbody = colliders[i].GetComponent<Rigidbody2D> ();
 
                 // If they don't have a rigidbody, go on to the next collider.
                 if (!targetRigidbody)
                     continue;
 
                 // Add an explosion force.
-                targetRigidbody.AddExplosionForce (m_ExplosionForce, transform.position, m_ExplosionRadius);
+                targetRigidbody.AddForce (targetRigidbody.transform.position - transform.position, ForceMode2D.Impulse);
 
                 // Find the TankHealth script associated with the rigidbody.
                 TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth> ();

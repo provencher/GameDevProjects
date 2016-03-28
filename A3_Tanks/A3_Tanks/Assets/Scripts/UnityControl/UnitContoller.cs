@@ -26,7 +26,7 @@ public class UnitContoller : NetworkBehaviour
     Vector2 currentWaypoint = Vector2.zero;
     TagGameLogic game;
 
-    float hazardDistance;
+    public float hazardDistance;
 
     bool initialized = false;
 
@@ -130,6 +130,7 @@ public class UnitContoller : NetworkBehaviour
 
             if(hit && hit.collider.gameObject.tag == "Unit")
             {
+                GetComponent<Complete.DroneShooting>().Fire(hit.transform.position - transform.position);
                 return hit.transform.position;                
             }
             else

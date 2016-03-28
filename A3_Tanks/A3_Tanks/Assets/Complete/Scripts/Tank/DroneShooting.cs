@@ -17,7 +17,11 @@ namespace Complete
 
         private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
         private float m_ChargeSpeed;                // How fast the launch force increases, based on the max charge time.
-        private bool m_Fired;                       // Whether or not the shell has been launched with this button press.
+        private bool m_Fired;
+
+        // Whether or not the shell has been launched with this button press.
+
+        bool canFire = true;
        
 
         private void Update ()
@@ -28,27 +32,36 @@ namespace Complete
             }
         }
 
-        public void Fire()
+        public void Fire(Vector3 direction)
         {
-            if (!isLocalPlayer)
+            if (canFire)
             {
-                return;
-            }
-            CmdFire();
+                canFire = false;
+                CmdFire(direction);
+                Invoke("ResetFire", 1);
+            }                                    
+
         }
 
+
+        void ResetFire()
+        {
+            canFire = true;
+        }
+
+
         [Command]
-        private void CmdFire ()
+        private void CmdFire (Vector3 direction)
         {
             // Set the fired flag so only Fire is only called once.
             m_Fired = true;
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody2D shellInstance =
-                Instantiate (m_Shell, transform.position, transform.rotation) as Rigidbody2D;
+                Instantiate (m_Shell, transform.position + transform.localRotation * Vector2.right * 0.75f, transform.rotation) as Rigidbody2D;
 
             // Set the shell's velocity to the launch force in the fire position's forward direction.
-            shellInstance.velocity = m_CurrentLaunchForce * transform.forward;
+            shellInstance.velocity = transform.localRotation * Vector2.right * 15f;
 
             NetworkServer.Spawn(shellInstance.gameObject);        
 

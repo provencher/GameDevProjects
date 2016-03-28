@@ -99,7 +99,7 @@ namespace Complete
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody2D shellInstance =
-                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody2D;
+                Instantiate (m_Shell, m_FireTransform.position + transform.forward * 0.3f, m_FireTransform.rotation) as Rigidbody2D;
 
             // Set the shell's velocity to the launch force in the fire position's forward direction.
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
