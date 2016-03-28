@@ -2,8 +2,10 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class TagGameLogic : MonoBehaviour {
+public class TagGameLogic : NetworkBehaviour
+{
     
     public int numberOfPlayers = 4;
     public UnitContoller[] players;
@@ -32,7 +34,7 @@ public class TagGameLogic : MonoBehaviour {
     }
 	
 
-    void SetupGame()
+    public void SetupGame()
     {
 
         foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
@@ -48,7 +50,10 @@ public class TagGameLogic : MonoBehaviour {
 
         for (var i = 0; i < players.Length; i++)
         {
-            if(i != seekerIndex)
+            players[i].GetComponent<UnitContoller>().initialize();
+            //players[i].GetComponent<Complete.TankMovement>().Initialize();
+
+            if (i != seekerIndex)
             {
                 players[i].gameObject.tag = "Seeker";
                 players[i].GetComponent<SteeringController>().maxVelocity = 2;

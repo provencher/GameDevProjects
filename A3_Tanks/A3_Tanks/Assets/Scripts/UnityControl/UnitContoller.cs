@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(SteeringController))]
-public class UnitContoller : MonoBehaviour
+public class UnitContoller : NetworkBehaviour
 {   
     public bool seeker = false;  
     public bool frozen = false;
@@ -27,9 +28,11 @@ public class UnitContoller : MonoBehaviour
 
     float hazardDistance;
 
-    // Use this for initialization
-    void Start()
+    bool initialized = false;
+
+    public void initialize()
     {
+        initialized = true;
         game = FindObjectOfType<TagGameLogic>();
         acceleration = Vector3.zero;
         targetCoord = Vector3.zero;
@@ -37,6 +40,12 @@ public class UnitContoller : MonoBehaviour
         control = GetComponent<SteeringController>();
         path = new Vector2[0];
         hazardDistance = 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
+    }
+
+    // Use this for initialization
+    public override void OnStartLocalPlayer()
+    {
+        //initialize();
     }
 
     void FindTarget()
@@ -204,7 +213,12 @@ public class UnitContoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(game.started)
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        if (initialized && game.started)
         {
             
             Vector2 accleration = Vector2.zero;       
@@ -278,7 +292,7 @@ public class UnitContoller : MonoBehaviour
     {   
         if(gameObject.tag == "Unit" && coll.gameObject.tag == "Seeker")
         {
-            Application.LoadLevel(0);
+            //Application.LoadLevel(0);
         }
     }
 

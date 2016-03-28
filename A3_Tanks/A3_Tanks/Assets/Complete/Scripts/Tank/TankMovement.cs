@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Complete
 {
-    public class TankMovement : MonoBehaviour
+    public class TankMovement : NetworkBehaviour
     {
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
@@ -23,6 +24,7 @@ namespace Complete
 
         public bool is2D = false;
 
+      
         private void Awake ()
         {
             if (GetComponent<Rigidbody>())
@@ -35,7 +37,11 @@ namespace Complete
                 is2D = true;
             }
         }
-
+        public override void OnStartLocalPlayer()
+        {
+            //GetComponent<MeshRenderer>().material.color = Color.blue;
+            Initialize();
+        }
 
         private void OnEnable()
         {
@@ -69,25 +75,40 @@ namespace Complete
             }           
         }
 
-
-        private void Start ()
+        bool initialized = false;
+        public void Initialize()
         {
+            initialized = true;
             // The axes names are based on player number.
             m_MovementAxisName = "Vertical" + m_PlayerNumber;
             m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
             // Store the original pitch of the audio source.
             m_OriginalPitch = m_MovementAudio.pitch;
+
+            if (FindObjectOfType<TagGameLogic>())
+            {
+                //FindObjectOfType<TagGameLogic>().SetupGame();
+            }
+            transform.rotation = Quaternion.Euler(270, 0, 0);            
         }
 
 
         private void Update ()
         {
-            // Store the value of both input axes.
-            m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
-            m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
+            if (!isLocalPlayer)
+            {
+                return;
+            }
 
-            EngineAudio ();
+            if (initialized)
+            {
+                // Store the value of both input axes.
+                m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+                m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+
+                EngineAudio();
+            }           
         }
 
 
