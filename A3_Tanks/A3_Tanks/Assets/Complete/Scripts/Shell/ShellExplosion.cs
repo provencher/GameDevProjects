@@ -12,6 +12,8 @@ namespace Complete
         public float m_MaxLifeTime = 2f;                    // The time in seconds before the shell is removed.
         public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
 
+        private int bounces = 0;
+        public bool canBounce = false;
 
         private void Start ()
         {
@@ -52,20 +54,29 @@ namespace Complete
                 targetHealth.TakeDamage (damage);
             }
 
-            // Unparent the particles from the shell.
-            m_ExplosionParticles.transform.parent = null;
 
-            // Play the particle system.
-            m_ExplosionParticles.Play();
+            if (canBounce && bounces < 2)
+            {
+                bounces++;
+                GetComponent<Rigidbody2D>().AddForce((transform.position - coll.transform.position).normalized * 15, ForceMode2D.Impulse);
+            }
+            else
+            {
+                // Unparent the particles from the shell.
+                m_ExplosionParticles.transform.parent = null;
 
-            // Play the explosion sound effect.
-            m_ExplosionAudio.Play();
+                // Play the particle system.
+                m_ExplosionParticles.Play();
 
-            // Once the particles have finished, destroy the gameobject they are on.
-            Destroy (m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
+                // Play the explosion sound effect.
+                m_ExplosionAudio.Play();
 
-            // Destroy the shell.
-            Destroy (gameObject);
+                // Once the particles have finished, destroy the gameobject they are on.
+                Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);
+
+                // Destroy the shell.
+                Destroy(gameObject);
+            }           
         }
 
 

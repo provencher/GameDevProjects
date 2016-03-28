@@ -86,6 +86,7 @@
     <Compile Include="Assets\Scripts\Pathfinding 2D\Node.cs" />
     <Compile Include="Assets\Scripts\Pathfinding 2D\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\Pathfinding 2D\Unit.cs" />
+    <Compile Include="Assets\Scripts\Power.cs" />
     <Compile Include="Assets\Scripts\ScreenEdge.cs" />
     <Compile Include="Assets\Scripts\TagGameLogic.cs" />
     <Compile Include="Assets\Scripts\UI\UIDirectionControl.cs" />

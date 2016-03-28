@@ -14,8 +14,7 @@ public class DestroyWall : NetworkBehaviour
     {       
         if (coll.gameObject.tag == "Bullet")
         {
-            CmdBreakWall();
-            Destroy(coll.gameObject);
+            CmdBreakWall();          
         }              
     }
 
