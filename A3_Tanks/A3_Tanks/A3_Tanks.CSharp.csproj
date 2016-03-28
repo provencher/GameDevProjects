@@ -72,6 +72,7 @@
     <Compile Include="Assets\Complete\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Complete\Scripts\Managers\TankManager.cs" />
     <Compile Include="Assets\Complete\Scripts\Shell\ShellExplosion.cs" />
+    <Compile Include="Assets\Complete\Scripts\Tank\DroneShooting.cs" />
     <Compile Include="Assets\Complete\Scripts\Tank\TankHealth.cs" />
     <Compile Include="Assets\Complete\Scripts\Tank\TankMovement.cs" />
     <Compile Include="Assets\Complete\Scripts\Tank\TankShooting.cs" />
@@ -86,11 +87,7 @@
     <Compile Include="Assets\Scripts\Pathfinding 2D\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\Pathfinding 2D\Unit.cs" />
     <Compile Include="Assets\Scripts\ScreenEdge.cs" />
-    <Compile Include="Assets\Scripts\Shell\ShellExplosion.cs" />
     <Compile Include="Assets\Scripts\TagGameLogic.cs" />
-    <Compile Include="Assets\Scripts\Tank\TankHealth.cs" />
-    <Compile Include="Assets\Scripts\Tank\TankMovement.cs" />
-    <Compile Include="Assets\Scripts\Tank\TankShooting.cs" />
     <Compile Include="Assets\Scripts\UI\UIDirectionControl.cs" />
     <Compile Include="Assets\Scripts\UnityControl\SteeringController.cs" />
     <Compile Include="Assets\Scripts\UnityControl\UnitContoller.cs" />

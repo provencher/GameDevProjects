@@ -11,13 +11,12 @@ public class DestroyWall : NetworkBehaviour
 	}
 
     void OnCollisionEnter2D(Collision2D coll)
-    {
-        CmdBreakWall();
-
-        if (gameObject.tag == "Bullet")
+    {       
+        if (coll.gameObject.tag == "Bullet")
         {
-
-        }                      
+            CmdBreakWall();
+            Destroy(coll.gameObject);
+        }              
     }
 
     [Command]
