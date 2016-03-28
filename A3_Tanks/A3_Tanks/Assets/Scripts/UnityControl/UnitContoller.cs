@@ -213,14 +213,8 @@ public class UnitContoller : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-
         if (initialized && game.started)
-        {
-            
+        {            
             Vector2 accleration = Vector2.zero;       
 
             FindTarget();
