@@ -130,10 +130,13 @@ public class SteeringController : MonoBehaviour {
         // If we have a non-zero direction then look towards that direciton otherwise do nothing
         if (direction.sqrMagnitude > 0.001f)
         {
+            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction),Time.deltaTime*turnSpeed);
+
+            
             float toRotation = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
             float rotation = Mathf.LerpAngle(transform.rotation.eulerAngles.z, toRotation, Time.deltaTime * turnSpeed);
 
-            transform.rotation = Quaternion.Euler(0, 0, rotation);
+            transform.rotation = Quaternion.Euler(0, 0, rotation);            
         }
     }
 

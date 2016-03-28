@@ -16,70 +16,63 @@ Platform assembly: C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo
 Loading C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo\Tanks_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo\Tanks_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo\Tanks_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.096 seconds
+- Completed reload, in  0.138 seconds
 Platform assembly: C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo\Tanks_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\eprov\Documents\GitHub\GameDevProjects\A3_Tanks\Demo\Tanks_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3840x1080 at -1920,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.582513 ms
+UnloadTime: 0.580282 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 64b0 -> priority: 1 
-  Thread -> id: 67d8 -> priority: 1 
-Trying to send command for object without authority.
+  Thread -> id: 4cc4 -> priority: 1 
+  Thread -> id: 735c -> priority: 1 
+Did not find target for sync message for 144
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 145
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 146
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Did not find target for sync message for 117
+Did not find target for sync message for 149
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 150
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 154
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 155
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 156
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 157
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 158
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 159
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
+Did not find target for sync message for 161
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
 
-Trying to send command for object without authority.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
-
-Trying to send command for object without authority.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
-
+Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}

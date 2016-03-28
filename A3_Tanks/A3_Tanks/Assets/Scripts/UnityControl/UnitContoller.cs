@@ -40,6 +40,7 @@ public class UnitContoller : NetworkBehaviour
         control = GetComponent<SteeringController>();
         path = new Vector2[0];
         hazardDistance = 2 * transform.localScale.x * GetComponent<CircleCollider2D>().radius;
+        transform.rotation = Quaternion.Euler(270, 0, 0);
     }
 
     // Use this for initialization

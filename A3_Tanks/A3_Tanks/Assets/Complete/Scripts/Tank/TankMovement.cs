@@ -57,7 +57,7 @@ namespace Complete
             foreach (var l in GameObject.FindGameObjectsWithTag("Landmark"))
             {                
                 l.GetComponent<MeshRenderer>().enabled = false;
-            }
+            }            
         }
 
         private void OnEnable()
