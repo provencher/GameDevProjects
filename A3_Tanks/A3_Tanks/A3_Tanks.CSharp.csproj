@@ -77,6 +77,7 @@
     <Compile Include="Assets\Complete\Scripts\Tank\TankShooting.cs" />
     <Compile Include="Assets\Complete\Scripts\UI\UIDirectionControl.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraControl.cs" />
+    <Compile Include="Assets\Scripts\DestroyWall.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\TankManager.cs" />
     <Compile Include="Assets\Scripts\Pathfinding 2D\Grid.cs" />
